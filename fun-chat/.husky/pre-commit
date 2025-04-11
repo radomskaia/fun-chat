@@ -1,0 +1,2 @@
+cd fun-chat
+npx lint-staged

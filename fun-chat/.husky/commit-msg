@@ -1,0 +1,2 @@
+cd fun-chat
+npx --no-install commitlint --edit "$1"

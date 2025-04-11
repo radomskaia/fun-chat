@@ -107,3 +107,4 @@ dist
 /package.json
 /package-lock.json
 /eslint.config.mjs
+!/fun-chat/package-lock.json
