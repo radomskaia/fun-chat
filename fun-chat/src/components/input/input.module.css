@@ -1,0 +1,8 @@
+.input {
+  border: 1px solid var(--primary);
+  font-size: inherit;
+  color: inherit;
+  background-color: var(--secondary-alpha);
+  padding-block: 5px;
+  padding-inline: 10px;
+}

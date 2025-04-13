@@ -7,9 +7,9 @@ import {
 } from "@/constants/constants.ts";
 import type { Injectable } from "@/types/di-container-types";
 import { ServiceName } from "@/types/di-container-types";
-import type { Route } from "@/types/router-type.ts";
 import { DIContainer } from "@/services/di-container.ts";
 import { ActionType } from "@/types/event-emitter-types.ts";
+import type { Route } from "@/types/router-type.ts";
 
 export class Router implements Injectable {
   public name: ServiceName = ServiceName.ROUTER;
@@ -60,7 +60,7 @@ export class Router implements Injectable {
 
   private routerChange(): void {
     const hash: string =
-      globalThis.location.hash.slice(SYMBOLS.HASH.length) || PAGE_PATH.HOME;
+      globalThis.location.hash.slice(SYMBOLS.HASH.length) || PAGE_PATH.LOGIN;
     if (hash === this.currentPath) {
       return;
     }

@@ -13,7 +13,7 @@ export class NotFound extends BaseComponent<"div"> {
     this.homeButton = new TextButton(BUTTON_TEXT.BACK, () =>
       DIContainer.getInstance()
         .getService<ServiceName.ROUTER>(ServiceName.ROUTER)
-        .navigateTo(PAGE_PATH.HOME),
+        .navigateTo(PAGE_PATH.LOGIN),
     );
     this.appendElement(this.homeButton.getElement());
   }

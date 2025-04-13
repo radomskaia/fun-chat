@@ -17,8 +17,9 @@ export const SYMBOLS = {
 };
 
 export const PAGE_PATH = {
-  HOME: "/",
-  WINNERS: "/winners",
+  MAIN: "/",
+  LOGIN: "/login",
+  ABOUT: "/about",
   NOT_FOUND: "404",
 } as const;
 
@@ -29,12 +30,6 @@ export const MESSAGES = {
   PAGE_NOT_FOUND: "Sorry, page not found",
   INVALID_DATA: "Invalid data",
 } as const;
-
-export const API_URL = "http://localhost:4000";
-export const API_HEADER = {
-  "Content-Type": "application/json",
-} as const;
-export const COUNT_HEADER = "X-Total-Count";
 
 export const ERROR_MESSAGES = {
   PATH_REQUIRED: "Path is required",
