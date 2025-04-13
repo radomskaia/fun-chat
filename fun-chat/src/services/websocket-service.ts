@@ -1,7 +1,7 @@
 import type { Injectable } from "@/types/di-container-types.ts";
 import { ServiceName } from "@/types/di-container-types.ts";
-import { TYPES } from "@/constants/websocket-constants.ts";
 import { API_URL } from "@/constants/websocket-constants.ts";
+import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
 
 export class WebSocketService implements Injectable {
   public name = ServiceName.WEBSOCKET;
@@ -16,10 +16,16 @@ export class WebSocketService implements Injectable {
     this.socket.addEventListener("message", (event) => {
       this.onMessage(event);
     });
+    this.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGIN, {
+      action: () => console.log("EXTERNAL_LOGIN"),
+    });
+    this.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGOUT, {
+      action: () => console.log("EXTERNAL_LOGOUT"),
+    });
   }
 
   public requestToServer(
-    type: TYPES,
+    type: RESPONSE_TYPES,
     payload: unknown,
     action: {
       error: (error: string) => void;
@@ -32,7 +38,7 @@ export class WebSocketService implements Injectable {
   }
 
   public requestFromServer(
-    type: TYPES,
+    type: RESPONSE_TYPES,
     action: {
       action: (data?: unknown) => void;
     },
@@ -40,7 +46,7 @@ export class WebSocketService implements Injectable {
     this.responseActions.set(type, action);
   }
 
-  private send(id: string, type: TYPES, payload: unknown): void {
+  private send(id: string, type: RESPONSE_TYPES, payload: unknown): void {
     const data = {
       id: id,
       type: type,
@@ -54,7 +60,7 @@ export class WebSocketService implements Injectable {
     let id: string;
     id = data.id || data.type;
     const action = this.responseActions.get(id);
-    if (data.type === TYPES.ERROR && action?.error) {
+    if (data.type === RESPONSE_TYPES.ERROR && action?.error) {
       action.error(data.payload.error);
     } else {
       action?.action(data.payload.data);

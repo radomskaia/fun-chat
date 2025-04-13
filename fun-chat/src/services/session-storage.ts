@@ -1,7 +1,10 @@
 import { LS_PREFIX } from "@/constants/constants.ts";
 import type { Injectable } from "@/types/di-container-types.ts";
 import { ServiceName } from "@/types/di-container-types.ts";
-import type { TypeNames, TypesForValidator } from "@/types/validator-types.ts";
+import type {
+  ValidatorTypes,
+  TypesForValidator,
+} from "@/types/validator-types.ts";
 import { DIContainer } from "@/services/di-container.ts";
 
 export class SessionStorage implements Injectable {
@@ -16,7 +19,7 @@ export class SessionStorage implements Injectable {
     globalThis.sessionStorage.setItem(storageKey, JSON.stringify(value));
   }
 
-  public load<T extends TypeNames>(
+  public load<T extends ValidatorTypes>(
     key: string,
     typeName: T,
   ): TypesForValidator[T] | null {

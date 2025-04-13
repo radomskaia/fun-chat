@@ -2,28 +2,31 @@ import { ZERO } from "@/constants/constants.ts";
 import type { Injectable } from "@/types/di-container-types";
 import { ServiceName } from "@/types/di-container-types";
 import type { TypesForValidator } from "@/types/validator-types.ts";
-import { TypeNames } from "@/types/validator-types.ts";
+import { ValidatorTypes } from "@/types/validator-types.ts";
+import type { LoginData } from "@/types/login-types.ts";
 
 export class Validator implements Injectable {
   public name = ServiceName.VALIDATOR;
   private privateTypes = {
-    object: TypeNames.object,
-    string: TypeNames.string,
-    number: TypeNames.number,
-    boolean: TypeNames.boolean,
+    object: ValidatorTypes.object,
+    string: ValidatorTypes.string,
+    number: ValidatorTypes.number,
+    boolean: ValidatorTypes.boolean,
   };
 
   private typesConfig = {
-    [TypeNames.object]: (value: unknown): value is object =>
+    [ValidatorTypes.object]: (value: unknown): value is object =>
       this.isObject(value),
-    [TypeNames.string]: (value: unknown): value is string =>
+    [ValidatorTypes.string]: (value: unknown): value is string =>
       this.isString(value),
-    [TypeNames.number]: (value: unknown): value is number =>
+    [ValidatorTypes.number]: (value: unknown): value is number =>
       this.isNumber(value),
-    [TypeNames.positiveNumber]: (value: unknown): value is number =>
+    [ValidatorTypes.positiveNumber]: (value: unknown): value is number =>
       this.isPositiveNumber(value),
-    [TypeNames.boolean]: (value: unknown): value is boolean =>
+    [ValidatorTypes.boolean]: (value: unknown): value is boolean =>
       this.isBoolean(value),
+    [ValidatorTypes.loginData]: (value: unknown): value is LoginData =>
+      this.isLoginData(value),
   };
 
   // private static isArrayOf<T>(
@@ -33,7 +36,7 @@ export class Validator implements Injectable {
   //   return Array.isArray(value) && value.every((element) => check(element));
   // }
 
-  public validate<T extends TypeNames>(
+  public validate<T extends ValidatorTypes>(
     typeName: T,
     value: unknown,
   ): value is TypesForValidator[T] {
@@ -58,5 +61,12 @@ export class Validator implements Injectable {
 
   private isPositiveNumber(value: unknown): value is number {
     return this.isNumber(value) && value >= ZERO;
+  }
+
+  private isLoginData(value: unknown): value is LoginData {
+    if (!(this.isObject(value) && "login" in value && "password" in value)) {
+      return false;
+    }
+    return this.isString(value.login) && this.isString(value.password);
   }
 }

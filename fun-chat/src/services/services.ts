@@ -5,6 +5,7 @@ import { EventEmitter } from "@/services/event-emitter.ts";
 import { SessionStorage } from "@/services/session-storage.ts";
 import { Validator } from "@/services/validator.ts";
 import { WebSocketService } from "@/services/websocket-service.ts";
+import { LoginService } from "@/services/login-service.ts";
 
 export function registerServices(): void {
   const diContainer = DIContainer.getInstance();
@@ -13,4 +14,5 @@ export function registerServices(): void {
   diContainer.register(ServiceName.STORAGE, SessionStorage);
   diContainer.register(ServiceName.VALIDATOR, Validator);
   diContainer.register(ServiceName.WEBSOCKET, WebSocketService);
+  diContainer.register(ServiceName.LOGIN_SERVICE, LoginService);
 }
