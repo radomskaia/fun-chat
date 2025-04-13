@@ -1,0 +1,14 @@
+export const API_URL = "ws://localhost:4000";
+
+export enum TYPES {
+  LOGIN = "USER_LOGIN",
+  LOGOUT = "USER_LOGOUT",
+  ACTIVE = "USER_ACTIVE",
+  INACTIVE = "USER_INACTIVE",
+  MESSAGE = "MSG_SEND",
+  HISTORY = "MSG_FROM_USER",
+  READ = "MSG_READ",
+  DELETE = "MSG_DELETE",
+  EDIT = "MSG_EDIT",
+  ERROR = "ERROR",
+}
