@@ -6,7 +6,7 @@
   --primary-alpha2: rgb(28 39 77 / 10%);
   --secondary: #ccc19f;
   --secondary-alpha: rgba(204, 193, 159, 0.5);
-  --red: #f9a2ba;
+  --red: rgba(249, 162, 186, 0.5);
   --static-white: #fbfbfd;
   --content-background: #ecf3f8;
   --content-background-alpha: rgba(236, 243, 248, 0.8);
@@ -33,6 +33,6 @@
     --content-background-alpha50: 30, 35, 55, 0.95;
     --content-table: #b6c2ca;
     --overlay: rgba(245, 248, 255, 0.2);
-    --red: #6b1431;
+    --red: rgba(107, 20, 49, 0.5);
   }
 }

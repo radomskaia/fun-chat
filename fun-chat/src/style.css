@@ -53,6 +53,10 @@ input {
   padding-inline: 15px;
 }
 
+input:invalid:not(:focus):not(:placeholder-shown) {
+  background-color: var(--red);
+}
+
 @media screen and (max-width: 47rem) {
   html {
     font-size: 56.25%;

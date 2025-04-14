@@ -8,8 +8,10 @@ export class NameInput extends BaseInput {
     });
     this.element.required = true;
     this.element.type = "text";
-    this.element.minLength = 4;
-    this.element.maxLength = 10;
+    this.element.pattern = "[a-zA-Z0-9_]{4,10}";
+    this.element.title =
+      "Use 4–10 characters with no spaces. Only letters (a–z, A–Z), numbers (0–9), and underscores (_) are allowed";
     this.element.autocomplete = "username";
+    this.element.autofocus = true;
   }
 }

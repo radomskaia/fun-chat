@@ -38,4 +38,9 @@ export class SessionStorage implements Injectable {
       return null;
     }
   }
+
+  public remove(key: string): void {
+    const storageKey = this.prefix + key;
+    globalThis.sessionStorage.removeItem(storageKey);
+  }
 }

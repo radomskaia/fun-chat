@@ -8,8 +8,9 @@ export class PasswordInput extends BaseInput {
     });
     this.element.required = true;
     this.element.type = "password";
-    this.element.minLength = 8;
-    this.element.maxLength = 16;
+    this.element.pattern = String.raw`(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}`;
+    this.element.title =
+      "Use at least 8 characters with no spaces and include at least one uppercase letter, one lowercase letter and one number";
     this.element.autocomplete = "current-password";
   }
 }

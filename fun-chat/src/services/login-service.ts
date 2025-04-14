@@ -35,13 +35,18 @@ export class LoginService implements Injectable {
     return this.isLogin;
   }
 
-  public login(loginData: LoginData): void {
+  public login(loginData?: LoginData): void {
+    if (!loginData && !this.loginData) {
+      return;
+    }
     const data = {
-      user: loginData,
+      user: loginData || this.loginData,
     };
     this.websocketService.requestToServer(RESPONSE_TYPES.LOGIN, data, {
       action: () => {
-        this.setLoginData(loginData);
+        if (loginData) {
+          this.setLoginData(loginData);
+        }
         this.router.navigateTo(PAGE_PATH.MAIN);
         console.log("LOGIN");
       },
@@ -55,12 +60,12 @@ export class LoginService implements Injectable {
     };
     this.websocketService.requestToServer(RESPONSE_TYPES.LOGOUT, data, {
       action: () => {
-        this.clearLoginData();
-        this.router.navigateTo(PAGE_PATH.LOGIN);
         console.log("LOGOUT");
       },
       error: (error: string) => console.log(error),
     });
+    this.clearLoginData();
+    this.router.navigateTo(PAGE_PATH.LOGIN);
   }
 
   public saveLoginData(): void {
@@ -69,6 +74,8 @@ export class LoginService implements Injectable {
         ...this.loginData,
         isLogin: this.isLogin,
       });
+    } else {
+      this.storageService.remove("loginData");
     }
   }
 

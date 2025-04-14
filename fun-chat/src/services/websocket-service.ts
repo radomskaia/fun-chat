@@ -1,7 +1,11 @@
 import type { Injectable } from "@/types/di-container-types.ts";
 import { ServiceName } from "@/types/di-container-types.ts";
-import { API_URL } from "@/constants/websocket-constants.ts";
+import {
+  API_URL,
+  RECONNECT_INTERVAL,
+} from "@/constants/websocket-constants.ts";
 import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
+import { DIContainer } from "@/services/di-container.ts";
 
 export class WebSocketService implements Injectable {
   public name = ServiceName.WEBSOCKET;
@@ -11,11 +15,10 @@ export class WebSocketService implements Injectable {
     { error?: (error: string) => void; action: (data?: unknown) => void }
   >();
   private url = API_URL;
+
   constructor() {
     this.socket = new WebSocket(this.url);
-    this.socket.addEventListener("message", (event) => {
-      this.onMessage(event);
-    });
+    this.connect();
     this.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGIN, {
       action: () => console.log("EXTERNAL_LOGIN"),
     });
@@ -44,6 +47,26 @@ export class WebSocketService implements Injectable {
     },
   ): void {
     this.responseActions.set(type, action);
+  }
+
+  private connect(): void {
+    if (this.socket.readyState === WebSocket.CLOSED) {
+      this.socket = new WebSocket(this.url);
+    }
+
+    this.socket.addEventListener("open", () => {
+      DIContainer.getInstance().getService(ServiceName.LOGIN_SERVICE).login();
+    });
+
+    this.socket.addEventListener("close", () => {
+      setTimeout(() => {
+        this.connect();
+      }, RECONNECT_INTERVAL);
+    });
+
+    this.socket.addEventListener("message", (event) => {
+      this.onMessage(event);
+    });
   }
 
   private send(id: string, type: RESPONSE_TYPES, payload: unknown): void {
