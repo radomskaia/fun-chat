@@ -4,7 +4,6 @@ import type {
   ActionType,
   Observer,
 } from "@/types/event-emitter-types.ts";
-import type { Callback } from "@/types/button-types.ts";
 import { DIContainer } from "@/services/di-container.ts";
 import { ServiceName } from "@/types/di-container-types.ts";
 import type {
@@ -15,6 +14,7 @@ import type {
   CreateSVG,
 } from "@/types/base-component-types.ts";
 import { ERROR_MESSAGES } from "@/constants/constants.ts";
+import type { Callback } from "@/types";
 
 export abstract class BaseComponent<
   T extends keyof HTMLElementTagNameMap,

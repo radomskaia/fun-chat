@@ -8,9 +8,7 @@ export class MainPage extends BaseComponent<"div"> {
     super();
     this.appendElement(
       new TextButton("LogOut", () => {
-        DIContainer.getInstance()
-          .getService(ServiceName.LOGIN_SERVICE)
-          .logout();
+        DIContainer.getInstance().getService(ServiceName.USER_SERVICE).logout();
       }).getElement(),
     );
   }

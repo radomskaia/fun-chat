@@ -1,53 +1,39 @@
 import { BaseComponent } from "@/components/base-component.ts";
 import utilitiesStyles from "@/styles/utilities.module.css";
-import { MESSAGES } from "@/constants/constants.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ValidatorTypes } from "@/types/validator-types.ts";
 import { NameInput } from "@/components/input/name-input.ts";
 import { PasswordInput } from "@/components/input/password-input.ts";
 import { TextButton } from "@/components/buttons/text-button.ts";
-import type { LoginData } from "@/types/login-types.ts";
 
-export class BaseForm extends BaseComponent<"form"> {
-  protected readonly nameElement;
-  protected passwordElement;
-  protected validator = DIContainer.getInstance().getService(
-    ServiceName.VALIDATOR,
-  );
-  protected loginService = DIContainer.getInstance().getService(
-    ServiceName.LOGIN_SERVICE,
-  );
-  constructor() {
-    super();
-    const labelName = this.createDOMElement({
-      tagName: "label",
-      textContent: "Username:",
-      classList: [
-        utilitiesStyles.flex,
-        utilitiesStyles.gap10,
-        utilitiesStyles.alignCenter,
-      ],
-    });
-    this.nameElement = new NameInput();
-    labelName.append(this.nameElement.getElement());
-    const labelPassword = this.createDOMElement({
-      tagName: "label",
-      textContent: "Password:",
-      classList: [
-        utilitiesStyles.flex,
-        utilitiesStyles.gap10,
-        utilitiesStyles.alignCenter,
-      ],
-    });
-    this.passwordElement = new PasswordInput();
-    labelPassword.append(this.passwordElement.getElement());
+export class BaseForm extends BaseComponent<
+  "form",
+  (event: SubmitEvent) => void
+> {
+  private inputConfig = {
+    username: NameInput,
+    password: PasswordInput,
+  };
+
+  constructor(formHandler: (event: SubmitEvent) => void) {
+    super(formHandler);
+    this.addInputs();
     const button = new TextButton("Submit");
     button.getElement().type = "submit";
-    this.appendElement(labelName, labelPassword, button.getElement());
+    this.appendElement(button.getElement());
   }
 
-  protected createElement(): HTMLFormElement {
+  public getFormData(): unknown {
+    const formData = new FormData(this.element);
+    const login = formData.get("name");
+    const password = formData.get("password");
+    return {
+      login,
+      password,
+    };
+  }
+
+  protected createElement(
+    formHandler: (event: SubmitEvent) => void,
+  ): HTMLFormElement {
     const form = this.createDOMElement({
       tagName: "form",
     });
@@ -60,29 +46,25 @@ export class BaseForm extends BaseComponent<"form"> {
       ],
       form,
     );
-    form.addEventListener("submit", (event) => this.formHandler(event));
+    form.addEventListener("submit", (event) => formHandler(event));
     return form;
   }
 
-  protected getFormData(): LoginData {
-    const formData = new FormData(this.element);
-    const login = formData.get("name");
-    const password = formData.get("password");
-    if (
-      !this.validator.validate(ValidatorTypes.string, login) ||
-      !this.validator.validate(ValidatorTypes.string, password)
-    ) {
-      throw new TypeError(MESSAGES.INVALID_DATA);
+  private addInputs(): void {
+    for (const [key, value] of Object.entries(this.inputConfig)) {
+      const label = this.createDOMElement({
+        tagName: "label",
+        textContent: `${key}: `,
+        classList: [
+          utilitiesStyles.flex,
+          utilitiesStyles.gap10,
+          utilitiesStyles.alignCenter,
+          utilitiesStyles.capitalize,
+        ],
+      });
+      const input = new value();
+      label.append(input.getElement());
+      this.appendElement(label);
     }
-    return {
-      login,
-      password,
-    };
-  }
-
-  protected formHandler(event: SubmitEvent): void {
-    event.preventDefault();
-    const data = this.getFormData();
-    this.loginService.login(data);
   }
 }

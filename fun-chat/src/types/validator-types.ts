@@ -1,4 +1,4 @@
-import type { LoginData } from "@/types/login-types.ts";
+import type { AuthData } from "@/types/login-types.ts";
 
 export enum ValidatorTypes {
   object = "object",
@@ -6,7 +6,7 @@ export enum ValidatorTypes {
   number = "number",
   positiveNumber = "positiveNumber",
   boolean = "boolean",
-  loginData = "loginData",
+  authData = "authData",
 }
 
 export interface TypesForValidator {
@@ -15,5 +15,5 @@ export interface TypesForValidator {
   [ValidatorTypes.number]: number;
   [ValidatorTypes.positiveNumber]: number;
   [ValidatorTypes.boolean]: boolean;
-  [ValidatorTypes.loginData]: LoginData;
+  [ValidatorTypes.authData]: AuthData;
 }

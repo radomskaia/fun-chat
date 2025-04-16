@@ -55,7 +55,7 @@ export class WebSocketService implements Injectable {
     }
 
     this.socket.addEventListener("open", () => {
-      DIContainer.getInstance().getService(ServiceName.LOGIN_SERVICE).login();
+      DIContainer.getInstance().getService(ServiceName.USER_SERVICE).login();
     });
 
     this.socket.addEventListener("close", () => {

@@ -1,4 +1,5 @@
-import type { BaseComponent } from "@/components/base-component.ts";
-
-export type ComponentConstructor = new () => BaseComponent<"div">;
+export type ComponentConstructor = new () => Page;
 export type Route = Map<string, ComponentConstructor>;
+export interface Page {
+  getElement: () => HTMLElement;
+}

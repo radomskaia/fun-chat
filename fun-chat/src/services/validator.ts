@@ -3,7 +3,7 @@ import type { Injectable } from "@/types/di-container-types";
 import { ServiceName } from "@/types/di-container-types";
 import type { TypesForValidator } from "@/types/validator-types.ts";
 import { ValidatorTypes } from "@/types/validator-types.ts";
-import type { LoginData } from "@/types/login-types.ts";
+import type { AuthData } from "@/types/login-types.ts";
 
 export class Validator implements Injectable {
   public name = ServiceName.VALIDATOR;
@@ -25,7 +25,7 @@ export class Validator implements Injectable {
       this.isPositiveNumber(value),
     [ValidatorTypes.boolean]: (value: unknown): value is boolean =>
       this.isBoolean(value),
-    [ValidatorTypes.loginData]: (value: unknown): value is LoginData =>
+    [ValidatorTypes.authData]: (value: unknown): value is AuthData =>
       this.isLoginData(value),
   };
 
@@ -63,7 +63,7 @@ export class Validator implements Injectable {
     return this.isNumber(value) && value >= ZERO;
   }
 
-  private isLoginData(value: unknown): value is LoginData {
+  private isLoginData(value: unknown): value is AuthData {
     if (!(this.isObject(value) && "login" in value && "password" in value)) {
       return false;
     }

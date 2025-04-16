@@ -1,14 +1,32 @@
-import { BaseComponent } from "@/components/base-component.ts";
-import { BaseForm } from "@/components/form/base-form.ts";
+import { LoginPageView } from "@/pages/login/login-page-view.ts";
+import { DIContainer } from "@/services/di-container.ts";
+import { ServiceName } from "@/types/di-container-types.ts";
+import type { Page } from "@/types/router-type.ts";
+import { ValidatorTypes } from "@/types/validator-types.ts";
 
-export class LoginPage extends BaseComponent<"div"> {
+export class LoginPage implements Page {
+  private view: LoginPageView;
+  private userService = DIContainer.getInstance().getService(
+    ServiceName.USER_SERVICE,
+  );
   constructor() {
-    super();
-    this.appendElement(new BaseForm().getElement());
+    this.view = new LoginPageView((event: SubmitEvent) =>
+      this.formHandler(event),
+    );
   }
-  protected createElement(): HTMLDivElement {
-    return this.createDOMElement({
-      tagName: "div",
-    });
+
+  public getElement(): HTMLDivElement {
+    return this.view.getElement();
+  }
+
+  protected formHandler(event: SubmitEvent): void {
+    event.preventDefault();
+    const data = this.view.getFormData();
+    const isValid = DIContainer.getInstance()
+      .getService(ServiceName.VALIDATOR)
+      .validate(ValidatorTypes.authData, data);
+    if (isValid) {
+      this.userService.login(data);
+    }
   }
 }

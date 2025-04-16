@@ -19,5 +19,6 @@ declare const utilitiesStyles: {
   width80: string;
   positionRelative: string;
   marginInline10: string;
+  capitalize: string;
 };
 export default utilitiesStyles;
