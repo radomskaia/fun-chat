@@ -1,10 +1,10 @@
-import type { Component } from "@/types/router-type.ts";
-import { UserBlockView } from "@/components/user-list/user-block-view.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ValidatorTypes } from "@/types/validator-types.ts";
+import type { Component } from "@/services/router/router-type.ts";
+import { UserBlockView } from "@/components/user-block/user-block-view.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 import type { User, UserState } from "@/types/user-list-types.ts";
-import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
+import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
 import { debounce } from "@/utilities/utilities.ts";
 import { DELAY_TIME } from "@/constants/constants.ts";
 

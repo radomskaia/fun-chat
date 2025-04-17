@@ -2,7 +2,7 @@ import type {
   Injectable,
   ServiceMap,
   ServiceName,
-} from "@/types/di-container-types.ts";
+} from "@/services/di-container/di-container-types.ts";
 import { ERROR_MESSAGES } from "@/constants/constants.ts";
 
 export class DIContainer {

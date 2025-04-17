@@ -1,4 +1,4 @@
-import type { RESPONSE_TYPES } from "@/types/websocket-types.ts";
+import type { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
 
 export interface User {
   login: string;

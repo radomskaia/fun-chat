@@ -2,9 +2,9 @@ import type {
   Action,
   ActionType,
   Observer,
-} from "@/types/event-emitter-types.ts";
-import type { Injectable } from "@/types/di-container-types.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
+} from "@/services/event-emitter/event-emitter-types.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 
 export class EventEmitter implements Injectable {
   public name = ServiceName.EVENT_EMITTER;

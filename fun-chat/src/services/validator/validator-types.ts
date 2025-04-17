@@ -1,6 +1,9 @@
-import type { AuthData } from "@/types/login-types.ts";
+import type { AuthData } from "@/services/auth-service/auth-types.ts";
 import type { User } from "@/types/user-list-types.ts";
-import type { UserPayload, UsersPayload } from "@/types/websocket-types.ts";
+import type {
+  UserPayload,
+  UsersPayload,
+} from "@/services/websocket/websocket-types.ts";
 
 export enum ValidatorTypes {
   object = "object",

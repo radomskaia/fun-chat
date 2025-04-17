@@ -3,8 +3,8 @@ import utilitiesStyles from "@/styles/utilities.module.css";
 import { TextButton } from "@/components/buttons/text-button.ts";
 import { MESSAGES, PAGE_PATH } from "@/constants/constants.ts";
 import { BUTTON_TEXT } from "@/constants/buttons-constants.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
 
 export class NotFound extends BaseComponent<"div"> {
   private homeButton: TextButton;

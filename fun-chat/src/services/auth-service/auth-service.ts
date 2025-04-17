@@ -1,15 +1,15 @@
-import type { Injectable } from "@/types/di-container-types.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import type { AuthData } from "@/types/login-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import type { AuthData } from "@/services/auth-service/auth-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
 import { PAGE_PATH } from "@/constants/constants.ts";
 import { StoreController } from "@/Store/store-controller.ts";
 import { StoreTypes } from "@/Store/store-types.ts";
-import type { Observer } from "@/types/event-emitter-types.ts";
-import { ActionType } from "@/types/event-emitter-types.ts";
+import type { Observer } from "@/services/event-emitter/event-emitter-types.ts";
+import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
 
-export class UserService implements Injectable, Observer {
+export class AuthService implements Injectable, Observer {
   public name = ServiceName.USER_SERVICE;
   private websocketService = DIContainer.getInstance().getService(
     ServiceName.WEBSOCKET,

@@ -1,9 +1,9 @@
-import type { SessionStorage } from "@/services/session-storage.ts";
-import type { Router } from "@/services/router.ts";
-import type { EventEmitter } from "@/services/event-emitter.ts";
-import type { Validator } from "@/services/validator.ts";
-import type { WebSocketService } from "@/services/websocket-service.ts";
-import type { UserService } from "@/services/user-service.ts";
+import type { SessionStorage } from "@/services/session-storage/session-storage.ts";
+import type { Router } from "@/services/router/router.ts";
+import type { EventEmitter } from "@/services/event-emitter/event-emitter.ts";
+import type { Validator } from "@/services/validator/validator.ts";
+import type { WebSocketService } from "@/services/websocket/websocket-service.ts";
+import type { AuthService } from "@/services/auth-service/auth-service.ts";
 
 export interface Injectable {
   name: ServiceName;
@@ -24,5 +24,5 @@ export interface ServiceMap {
   [ServiceName.STORAGE]: SessionStorage;
   [ServiceName.VALIDATOR]: Validator;
   [ServiceName.WEBSOCKET]: WebSocketService;
-  [ServiceName.USER_SERVICE]: UserService;
+  [ServiceName.USER_SERVICE]: AuthService;
 }

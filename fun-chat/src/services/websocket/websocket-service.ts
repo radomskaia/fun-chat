@@ -1,12 +1,12 @@
-import type { Injectable } from "@/types/di-container-types.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import {
   API_URL,
   RECONNECT_INTERVAL,
-} from "@/constants/websocket-constants.ts";
-import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ActionType } from "@/types/event-emitter-types.ts";
+} from "@/services/websocket/websocket-constants.ts";
+import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
 
 export class WebSocketService implements Injectable {
   public name = ServiceName.WEBSOCKET;

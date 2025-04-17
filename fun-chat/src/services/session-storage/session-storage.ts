@@ -1,11 +1,11 @@
 import { LS_PREFIX } from "@/constants/constants.ts";
-import type { Injectable } from "@/types/di-container-types.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import type {
   ValidatorTypes,
   TypesForValidator,
-} from "@/types/validator-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
+} from "@/services/validator/validator-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
 
 export class SessionStorage implements Injectable {
   public name = ServiceName.STORAGE;

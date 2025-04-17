@@ -3,9 +3,9 @@ import type {
   Action,
   ActionType,
   Observer,
-} from "@/types/event-emitter-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
+} from "@/services/event-emitter/event-emitter-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import type {
   AddAttributes,
   AddClassList,

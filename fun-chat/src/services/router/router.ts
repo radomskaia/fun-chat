@@ -5,11 +5,11 @@ import {
   PAGE_PATH,
   SYMBOLS,
 } from "@/constants/constants.ts";
-import type { Injectable } from "@/types/di-container-types";
-import { ServiceName } from "@/types/di-container-types";
-import { DIContainer } from "@/services/di-container.ts";
-import { ActionType } from "@/types/event-emitter-types.ts";
-import type { Route } from "@/types/router-type.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
+import type { Route } from "@/services/router/router-type.ts";
 import { StoreController } from "@/Store/store-controller.ts";
 import { StoreTypes } from "@/Store/store-types.ts";
 

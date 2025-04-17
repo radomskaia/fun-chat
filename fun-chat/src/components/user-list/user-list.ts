@@ -1,4 +1,4 @@
-import type { Component } from "@/types/router-type.ts";
+import type { Component } from "@/services/router/router-type.ts";
 import { UserListView } from "@/components/user-list/user-list-view.ts";
 import type { User } from "@/types/user-list-types.ts";
 

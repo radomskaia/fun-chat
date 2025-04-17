@@ -2,7 +2,7 @@ import { BaseComponent } from "@/components/base-component.ts";
 import { TextButton } from "@/components/buttons/text-button.ts";
 import type { Callback } from "@/types";
 import utilitiesStyles from "@/styles/utilities.module.css";
-import { UserBlock } from "@/components/user-list/user-block.ts";
+import { UserBlock } from "@/components/user-block/user-block.ts";
 
 export class MainPageView extends BaseComponent<"div"> {
   private userBlock;

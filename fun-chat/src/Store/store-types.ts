@@ -1,4 +1,4 @@
-import type { AuthData } from "@/types/login-types.ts";
+import type { AuthData } from "@/services/auth-service/auth-types.ts";
 
 export enum StoreTypes {
   USER = "user",

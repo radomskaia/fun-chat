@@ -1,7 +1,7 @@
 import { NotFound } from "@/pages/not-found.ts";
 import { PAGE_PATH } from "@/constants/constants.ts";
 import { LoginPage } from "@/pages/login/login-page.ts";
-import type { ComponentConstructor } from "@/types/router-type.ts";
+import type { ComponentConstructor } from "@/services/router/router-type.ts";
 import { MainPage } from "@/pages/main/main-page.ts";
 
 export const appRoutes = new Map<string, ComponentConstructor>([

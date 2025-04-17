@@ -2,9 +2,9 @@ import { Store } from "@/Store/store.ts";
 import { StoreObserver } from "@/Store/store-observer.ts";
 import type { State, StoreCallback } from "@/Store/store-types.ts";
 import { StoreTypes } from "@/Store/store-types.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import { ValidatorTypes } from "@/types/validator-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 
 export class StoreController {
   private static instance: StoreController;

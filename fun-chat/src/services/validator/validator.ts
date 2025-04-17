@@ -1,11 +1,14 @@
 import { ZERO } from "@/constants/constants.ts";
-import type { Injectable } from "@/types/di-container-types";
-import { ServiceName } from "@/types/di-container-types";
-import type { TypesForValidator } from "@/types/validator-types.ts";
-import { ValidatorTypes } from "@/types/validator-types.ts";
-import type { AuthData } from "@/types/login-types.ts";
+import type { Injectable } from "@/services/di-container/di-container-types.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import type { TypesForValidator } from "@/services/validator/validator-types.ts";
+import { ValidatorTypes } from "@/services/validator/validator-types.ts";
+import type { AuthData } from "@/services/auth-service/auth-types.ts";
 import type { User } from "@/types/user-list-types.ts";
-import type { UserPayload, UsersPayload } from "@/types/websocket-types.ts";
+import type {
+  UserPayload,
+  UsersPayload,
+} from "@/services/websocket/websocket-types.ts";
 
 export class Validator implements Injectable {
   public name = ServiceName.VALIDATOR;

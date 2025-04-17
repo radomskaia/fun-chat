@@ -1,11 +1,11 @@
 import { MainPageView } from "@/pages/main/main-page-view.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import type { Component } from "@/types/router-type.ts";
-import { DIContainer } from "@/services/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import type { Component } from "@/services/router/router-type.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
 import { StoreController } from "@/Store/store-controller.ts";
 import { StoreTypes } from "@/Store/store-types.ts";
-import type { Observer } from "@/types/event-emitter-types.ts";
-import { ActionType } from "@/types/event-emitter-types.ts";
+import type { Observer } from "@/services/event-emitter/event-emitter-types.ts";
+import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
 
 export class MainPage implements Component, Observer {
   private readonly view;

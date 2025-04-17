@@ -1,8 +1,8 @@
 import { LoginPageView } from "@/pages/login/login-page-view.ts";
-import { DIContainer } from "@/services/di-container.ts";
-import { ServiceName } from "@/types/di-container-types.ts";
-import type { Component } from "@/types/router-type.ts";
-import { ValidatorTypes } from "@/types/validator-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import type { Component } from "@/services/router/router-type.ts";
+import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 
 export class LoginPage implements Component {
   private view: LoginPageView;
