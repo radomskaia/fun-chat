@@ -40,6 +40,10 @@ export class Router implements Injectable {
   }
 
   public navigateTo(path: string): void {
+    if (path === this.currentPath) {
+      return;
+    }
+
     this.clearPage();
     const isLogin = StoreController.getInstance().getState(StoreTypes.USER);
 
@@ -73,9 +77,6 @@ export class Router implements Injectable {
   private routerChange(): void {
     const hash: string =
       globalThis.location.hash.slice(SYMBOLS.HASH.length) || PAGE_PATH.LOGIN;
-    if (hash === this.currentPath) {
-      return;
-    }
     this.navigateTo(hash);
   }
 }

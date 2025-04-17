@@ -47,3 +47,5 @@ export const ATTRIBUTES = {
   FILL: "fill",
   ARIA_LABEL: "aria-label",
 } as const;
+
+export const DELAY_TIME = 300;

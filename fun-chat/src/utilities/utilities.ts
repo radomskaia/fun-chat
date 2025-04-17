@@ -1,3 +1,5 @@
+import { DELAY_TIME } from "@/constants/constants.ts";
+
 export function errorHandler(error: unknown): void {
   if (error instanceof Error) {
     console.warn(error.message);
@@ -12,4 +14,15 @@ export function errorHandler(error: unknown): void {
     return;
   }
   console.warn(error);
+}
+
+export function debounce<F extends (...arguments_: Parameters<F>) => void>(
+  callback: F,
+  delay = DELAY_TIME,
+) {
+  let timeoutID: ReturnType<typeof setTimeout>;
+  return function (...arguments_: Parameters<F>): void {
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(() => callback(...arguments_), delay);
+  };
 }

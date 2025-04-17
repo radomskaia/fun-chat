@@ -6,6 +6,7 @@ import {
 } from "@/constants/websocket-constants.ts";
 import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
 import { DIContainer } from "@/services/di-container.ts";
+import { ActionType } from "@/types/event-emitter-types.ts";
 
 export class WebSocketService implements Injectable {
   public name = ServiceName.WEBSOCKET;
@@ -14,29 +15,26 @@ export class WebSocketService implements Injectable {
     string,
     { error?: (error: string) => void; action: (data?: unknown) => void }
   >();
+  private diContainer = DIContainer.getInstance();
   private url = API_URL;
 
   constructor() {
     this.socket = new WebSocket(this.url);
     this.connect();
-    this.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGIN, {
-      action: () => console.log("EXTERNAL_LOGIN"),
-    });
-    this.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGOUT, {
-      action: () => console.log("EXTERNAL_LOGOUT"),
-    });
   }
 
   public requestToServer(
     type: RESPONSE_TYPES,
     payload: unknown,
-    action: {
+    action?: {
       error: (error: string) => void;
       action: (data?: unknown) => void;
     },
   ): void {
     const id = globalThis.crypto.randomUUID();
-    this.responseActions.set(id, action);
+    if (action) {
+      this.responseActions.set(id, action);
+    }
     this.send(id, type, payload);
   }
 
@@ -55,10 +53,13 @@ export class WebSocketService implements Injectable {
     }
 
     this.socket.addEventListener("open", () => {
-      DIContainer.getInstance().getService(ServiceName.USER_SERVICE).login();
+      this.diContainer
+        .getService(ServiceName.EVENT_EMITTER)
+        .notify({ type: ActionType.openSocket });
     });
 
     this.socket.addEventListener("close", () => {
+      console.log("disconnected");
       setTimeout(() => {
         this.connect();
       }, RECONNECT_INTERVAL);
@@ -70,6 +71,9 @@ export class WebSocketService implements Injectable {
   }
 
   private send(id: string, type: RESPONSE_TYPES, payload: unknown): void {
+    if (this.socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
     const data = {
       id: id,
       type: type,
@@ -86,7 +90,7 @@ export class WebSocketService implements Injectable {
     if (data.type === RESPONSE_TYPES.ERROR && action?.error) {
       action.error(data.payload.error);
     } else {
-      action?.action(data.payload.data);
+      action?.action(data.payload);
     }
   }
 }

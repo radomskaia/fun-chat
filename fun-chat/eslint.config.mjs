@@ -37,6 +37,8 @@ export default [
         "error",
         { max: 40, skipBlankLines: true, skipComments: true },
       ],
+      "no-dupe-class-members": "off",
+      "@typescript-eslint/no-dupe-class-members": "error",
       "no-magic-numbers": ["error"],
       "@typescript-eslint/no-inferrable-types": "error",
       "@typescript-eslint/no-explicit-any": "error",

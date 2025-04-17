@@ -5,7 +5,7 @@ import styles from "@/components/input/input.module.css";
 export abstract class BaseInput extends BaseComponent<
   "input",
   {
-    label: string;
+    label?: string;
     placeholder: string;
   }
 > {
@@ -32,14 +32,16 @@ export abstract class BaseInput extends BaseComponent<
   }
 
   protected createElement(options: {
-    label: string;
+    label?: string;
     placeholder: string;
   }): HTMLInputElement {
     const input = this.createDOMElement({
       tagName: "input",
       classList: [styles.input],
     });
-    input.name = options.label;
+    if (options.label) {
+      input.name = options.label;
+    }
     input.placeholder = options.placeholder;
     return input;
   }

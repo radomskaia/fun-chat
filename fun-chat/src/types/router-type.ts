@@ -1,5 +1,5 @@
-export type ComponentConstructor = new () => Page;
+export type ComponentConstructor = new () => Component;
 export type Route = Map<string, ComponentConstructor>;
-export interface Page {
+export interface Component {
   getElement: () => HTMLElement;
 }

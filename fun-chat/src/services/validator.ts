@@ -4,6 +4,8 @@ import { ServiceName } from "@/types/di-container-types";
 import type { TypesForValidator } from "@/types/validator-types.ts";
 import { ValidatorTypes } from "@/types/validator-types.ts";
 import type { AuthData } from "@/types/login-types.ts";
+import type { User } from "@/types/user-list-types.ts";
+import type { UserPayload, UsersPayload } from "@/types/websocket-types.ts";
 
 export class Validator implements Injectable {
   public name = ServiceName.VALIDATOR;
@@ -26,15 +28,21 @@ export class Validator implements Injectable {
     [ValidatorTypes.boolean]: (value: unknown): value is boolean =>
       this.isBoolean(value),
     [ValidatorTypes.authData]: (value: unknown): value is AuthData =>
-      this.isLoginData(value),
+      this.isAuthData(value),
+    [ValidatorTypes.user]: (value: unknown): value is User =>
+      this.isUserData(value),
+    [ValidatorTypes.usersPayload]: (value: unknown): value is UsersPayload =>
+      this.isUsersPayload(value),
+    [ValidatorTypes.userPayload]: (value: unknown): value is UserPayload =>
+      this.isUserPayload(value),
   };
 
-  // private static isArrayOf<T>(
-  //   value: unknown,
-  //   check: (item: unknown) => item is T,
-  // ): value is T[] {
-  //   return Array.isArray(value) && value.every((element) => check(element));
-  // }
+  private static isArrayOf<T>(
+    value: unknown,
+    check: (item: unknown) => item is T,
+  ): value is T[] {
+    return Array.isArray(value) && value.every((element) => check(element));
+  }
 
   public validate<T extends ValidatorTypes>(
     typeName: T,
@@ -63,10 +71,31 @@ export class Validator implements Injectable {
     return this.isNumber(value) && value >= ZERO;
   }
 
-  private isLoginData(value: unknown): value is AuthData {
+  private isAuthData(value: unknown): value is AuthData {
     if (!(this.isObject(value) && "login" in value && "password" in value)) {
       return false;
     }
     return this.isString(value.login) && this.isString(value.password);
+  }
+
+  private isUserData(value: unknown): value is User {
+    if (!(this.isObject(value) && "login" in value && "isLogined" in value)) {
+      return false;
+    }
+    return this.isString(value.login) && this.isBoolean(value.isLogined);
+  }
+
+  private isUserPayload(value: unknown): value is UserPayload {
+    if (!(this.isObject(value) && "user" in value)) {
+      return false;
+    }
+    return this.isUserData(value.user);
+  }
+
+  private isUsersPayload(value: unknown): value is UserPayload {
+    if (!(this.isObject(value) && "users" in value)) {
+      return false;
+    }
+    return Validator.isArrayOf(value.users, this.isUserData.bind(this));
   }
 }

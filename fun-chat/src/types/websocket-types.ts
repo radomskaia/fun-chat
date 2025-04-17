@@ -1,3 +1,5 @@
+import type { User } from "@/types/user-list-types.ts";
+
 export enum RESPONSE_TYPES {
   LOGIN = "USER_LOGIN",
   LOGOUT = "USER_LOGOUT",
@@ -12,4 +14,12 @@ export enum RESPONSE_TYPES {
   EXTERNAL_LOGIN = "USER_EXTERNAL_LOGIN",
   EXTERNAL_LOGOUT = "USER_EXTERNAL_LOGOUT",
   MESSAGE_DELIVER = "MSG_DELIVER",
+}
+
+export interface UsersPayload {
+  users: User[];
+}
+
+export interface UserPayload {
+  user: User;
 }

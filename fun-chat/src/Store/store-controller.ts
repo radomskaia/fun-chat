@@ -38,12 +38,14 @@ export class StoreController {
     return StoreController.instance;
   }
 
+  public getState(): State;
+  public getState<A extends StoreTypes>(type: A): State[A];
   public getState<A extends StoreTypes>(type?: A): State | State[A] {
     const state = this.store.getState();
     if (type) {
       return state[type];
     }
-    return state;
+    return this.store.getState();
   }
 
   public subscribe(listener: StoreCallback, type?: StoreTypes): () => void {

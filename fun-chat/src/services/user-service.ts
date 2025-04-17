@@ -6,8 +6,10 @@ import { RESPONSE_TYPES } from "@/types/websocket-types.ts";
 import { PAGE_PATH } from "@/constants/constants.ts";
 import { StoreController } from "@/Store/store-controller.ts";
 import { StoreTypes } from "@/Store/store-types.ts";
+import type { Observer } from "@/types/event-emitter-types.ts";
+import { ActionType } from "@/types/event-emitter-types.ts";
 
-export class UserService implements Injectable {
+export class UserService implements Injectable, Observer {
   public name = ServiceName.USER_SERVICE;
   private websocketService = DIContainer.getInstance().getService(
     ServiceName.WEBSOCKET,
@@ -15,8 +17,16 @@ export class UserService implements Injectable {
   private storeController = StoreController.getInstance();
   private router = DIContainer.getInstance().getService(ServiceName.ROUTER);
 
-  public login(authData?: AuthData): void {
+  constructor() {
+    DIContainer.getInstance()
+      .getService(ServiceName.EVENT_EMITTER)
+      .subscribe(ActionType.openSocket, this);
+  }
+
+  public login(authData?: AuthData | null): void {
+    authData = authData || this.storeController.getState(StoreTypes.USER);
     if (!authData) {
+      this.router.navigateTo(PAGE_PATH.LOGIN);
       return;
     }
     const data = {
@@ -28,7 +38,6 @@ export class UserService implements Injectable {
           this.storeController.dispatch(StoreTypes.USER, authData);
         }
         this.router.navigateTo(PAGE_PATH.MAIN);
-        console.log("LOGIN");
       },
       error: (error: string) => console.log(error),
     });
@@ -39,13 +48,12 @@ export class UserService implements Injectable {
     const data = {
       user: authData,
     };
-    this.websocketService.requestToServer(RESPONSE_TYPES.LOGOUT, data, {
-      action: () => {
-        console.log("LOGOUT");
-      },
-      error: (error: string) => console.log(error),
-    });
+    this.websocketService.requestToServer(RESPONSE_TYPES.LOGOUT, data);
     this.storeController.dispatch(StoreTypes.USER, null);
     this.router.navigateTo(PAGE_PATH.LOGIN);
+  }
+
+  public update(): void {
+    this.login();
   }
 }

@@ -1,10 +1,10 @@
 import { LoginPageView } from "@/pages/login/login-page-view.ts";
 import { DIContainer } from "@/services/di-container.ts";
 import { ServiceName } from "@/types/di-container-types.ts";
-import type { Page } from "@/types/router-type.ts";
+import type { Component } from "@/types/router-type.ts";
 import { ValidatorTypes } from "@/types/validator-types.ts";
 
-export class LoginPage implements Page {
+export class LoginPage implements Component {
   private view: LoginPageView;
   private userService = DIContainer.getInstance().getService(
     ServiceName.USER_SERVICE,
