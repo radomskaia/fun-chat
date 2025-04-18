@@ -1,25 +1,27 @@
-import type { State, StoreCallback, StoreTypes } from "@/Store/store-types.ts";
-import { Store } from "@/Store/store.ts";
+import type { Store } from "@/Store/store.ts";
+import type { StoreCallback } from "@/Store/store-types.ts";
 
-export class StoreObserver {
-  public static instance: StoreObserver;
-  private observers = new Map<StoreTypes, StoreCallback[]>();
-  constructor() {
-    Store.getInstance().subscribe((data: Partial<State>, type?: StoreTypes) => {
+export class StoreObserver<T> {
+  private observers = new Map<keyof T, StoreCallback<T>[]>();
+
+  public constructor(store: Store<T>) {
+    store.subscribe((data: Partial<T>, type?: keyof T) => {
       if (type) {
         this.notify(data, type);
       }
     });
   }
 
-  public static getInstance(): StoreObserver {
-    if (!StoreObserver.instance) {
-      StoreObserver.instance = new StoreObserver();
-    }
-    return StoreObserver.instance;
+  private static validateState<T>(
+    state: object,
+    data: Partial<T>,
+    type: keyof T,
+  ): state is Partial<T> {
+    const newState = { [type]: data[type] };
+    return JSON.stringify(newState) === JSON.stringify(state);
   }
 
-  public subscribe(callback: StoreCallback, type: StoreTypes): () => void {
+  public subscribe(callback: StoreCallback<T>, type: keyof T): () => void {
     const observers = this.observers.get(type);
     if (observers) {
       observers.push(callback);
@@ -35,8 +37,11 @@ export class StoreObserver {
     };
   }
 
-  private notify(data: Partial<State>, type: StoreTypes): void {
+  private notify(data: Partial<T>, type: keyof T): void {
     const state = { [type]: data[type] };
+    if (!StoreObserver.validateState(state, data, type)) {
+      return;
+    }
     const observers = this.observers.get(type);
     if (observers) {
       for (const listener of observers) {

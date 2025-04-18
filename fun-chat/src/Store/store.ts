@@ -1,37 +1,21 @@
-import type { State, StoreCallback } from "@/Store/store-types.ts";
-import type { StoreTypes } from "@/Store/store-types.ts";
+import type { StoreCallback } from "@/Store/store-types.ts";
 
-export class Store {
-  public static instance: Store;
-  private state: State | null;
-  private listeners: StoreCallback[] = [];
+export class Store<S> {
+  private state: S;
+  private listeners: StoreCallback<S>[] = [];
 
-  private constructor() {
-    this.state = null;
-  }
-
-  public static getInstance(): Store {
-    if (!Store.instance) {
-      Store.instance = new Store();
-    }
-    return Store.instance;
-  }
-
-  public init(initialValue: State): void {
-    if (this.state) {
-      return;
-    }
+  public constructor(initialValue: S) {
     this.state = structuredClone(initialValue);
   }
 
-  public getState(): State {
+  public getState(): S {
     if (!this.state) {
       throw new Error("Store is not initialized");
     }
     return structuredClone(this.state);
   }
 
-  public dispatch<A extends StoreTypes>(type: A, payload: State[A]): void {
+  public dispatch<A extends keyof S>(type: A, payload: S[A]): void {
     if (!this.state) {
       throw new Error("Store is not initialized");
     }
@@ -47,7 +31,7 @@ export class Store {
     }
   }
 
-  public subscribe(listener: StoreCallback): () => void {
+  public subscribe(listener: StoreCallback<S>): () => void {
     this.listeners.push(listener);
     return () =>
       (this.listeners = this.listeners.filter(

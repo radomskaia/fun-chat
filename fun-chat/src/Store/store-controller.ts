@@ -1,46 +1,19 @@
 import { Store } from "@/Store/store.ts";
 import { StoreObserver } from "@/Store/store-observer.ts";
-import type { State, StoreCallback } from "@/Store/store-types.ts";
-import { StoreTypes } from "@/Store/store-types.ts";
-import { DIContainer } from "@/services/di-container/di-container.ts";
-import { ServiceName } from "@/services/di-container/di-container-types.ts";
-import { ValidatorTypes } from "@/services/validator/validator-types.ts";
+import type { StoreCallback } from "@/Store/store-types.ts";
 
-export class StoreController {
-  private static instance: StoreController;
-  private store = Store.getInstance();
-  private observer = StoreObserver.getInstance();
-  private storageService = DIContainer.getInstance().getService(
-    ServiceName.STORAGE,
-  );
+export abstract class StoreController<S, K extends keyof S> {
+  protected store;
+  protected observer;
 
-  private constructor() {
-    window.addEventListener("beforeunload", () => {
-      const user = this.store.getState().user;
-      if (user) {
-        this.storageService.save(StoreTypes.USER, user);
-      } else {
-        this.storageService.remove(StoreTypes.USER);
-      }
-    });
-
-    const authData = this.storageService.load(
-      StoreTypes.USER,
-      ValidatorTypes.authData,
-    );
-    this.store.init({ [StoreTypes.USER]: authData });
+  protected constructor(initialValue: S) {
+    this.store = new Store<S>(initialValue);
+    this.observer = new StoreObserver(this.store);
   }
 
-  public static getInstance(): StoreController {
-    if (!StoreController.instance) {
-      StoreController.instance = new StoreController();
-    }
-    return StoreController.instance;
-  }
-
-  public getState(): State;
-  public getState<A extends StoreTypes>(type: A): State[A];
-  public getState<A extends StoreTypes>(type?: A): State | State[A] {
+  public getState(): S;
+  public getState<A extends K>(type: A): S[A];
+  public getState<A extends K>(type?: A): S | S[A] {
     const state = this.store.getState();
     if (type) {
       return state[type];
@@ -48,7 +21,7 @@ export class StoreController {
     return this.store.getState();
   }
 
-  public subscribe(listener: StoreCallback, type?: StoreTypes): () => void {
+  public subscribe(listener: StoreCallback<S>, type?: K): () => void {
     let unsubscribe: () => void;
     unsubscribe = type
       ? this.observer.subscribe(listener, type)
@@ -56,7 +29,7 @@ export class StoreController {
     return unsubscribe;
   }
 
-  public dispatch<A extends StoreTypes>(type: A, payload: State[A]): void {
+  public dispatch<A extends K>(type: A, payload: S[A]): void {
     this.store.dispatch(type, payload);
   }
 }

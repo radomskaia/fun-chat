@@ -2,20 +2,20 @@ import { MainPageView } from "@/pages/main/main-page-view.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import type { Component } from "@/services/router/router-type.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
-import { StoreController } from "@/Store/store-controller.ts";
-import { StoreTypes } from "@/Store/store-types.ts";
+import { GlobalStoreTypes } from "@/Store/global-store/global-store-types.ts";
 import type { Observer } from "@/services/event-emitter/event-emitter-types.ts";
 import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
+import { GlobalStore } from "@/Store/global-store/global-store.ts";
 
 export class MainPage implements Component, Observer {
   private readonly view;
   private userService = DIContainer.getInstance().getService(
     ServiceName.USER_SERVICE,
   );
-  private store = StoreController.getInstance();
+  private store = GlobalStore.getInstance();
 
   constructor() {
-    const user = this.store.getState(StoreTypes.USER);
+    const user = this.store.getState(GlobalStoreTypes.USER);
     if (!user) {
       this.userService.logout();
       throw new Error("User is not logged in");
@@ -27,7 +27,7 @@ export class MainPage implements Component, Observer {
   }
 
   public update(): void {
-    const login = this.store.getState(StoreTypes.USER)?.login;
+    const login = this.store.getState(GlobalStoreTypes.USER)?.login;
     if (!login) {
       return;
     }
