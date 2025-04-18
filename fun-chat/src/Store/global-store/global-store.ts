@@ -1,11 +1,11 @@
 import type { State } from "@/Store/global-store/global-store-types.ts";
-import { GlobalStoreTypes } from "@/Store/global-store/global-store-types.ts";
+import { GlobalStoreKeys } from "@/Store/global-store/global-store-types.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 import { StoreController } from "@/Store/store-controller.ts";
 
-export class GlobalStore extends StoreController<State, GlobalStoreTypes> {
+export class GlobalStore extends StoreController<State, GlobalStoreKeys> {
   private static instance: GlobalStore;
   private storageService = DIContainer.getInstance().getService(
     ServiceName.STORAGE,
@@ -16,9 +16,9 @@ export class GlobalStore extends StoreController<State, GlobalStoreTypes> {
     window.addEventListener("beforeunload", () => {
       const user = this.store.getState().user;
       if (user) {
-        this.storageService.save(GlobalStoreTypes.USER, user);
+        this.storageService.save(GlobalStoreKeys.USER, user);
       } else {
-        this.storageService.remove(GlobalStoreTypes.USER);
+        this.storageService.remove(GlobalStoreKeys.USER);
       }
     });
   }
@@ -27,9 +27,9 @@ export class GlobalStore extends StoreController<State, GlobalStoreTypes> {
     if (!GlobalStore.instance) {
       const authData = DIContainer.getInstance()
         .getService(ServiceName.STORAGE)
-        .load(GlobalStoreTypes.USER, ValidatorTypes.authData);
+        .load(GlobalStoreKeys.USER, ValidatorTypes.authData);
       const initialState = {
-        [GlobalStoreTypes.USER]: authData,
+        [GlobalStoreKeys.USER]: authData,
       };
       GlobalStore.instance = new GlobalStore(initialState);
     }

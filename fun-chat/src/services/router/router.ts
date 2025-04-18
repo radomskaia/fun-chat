@@ -10,7 +10,7 @@ import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
 import type { Route } from "@/services/router/router-type.ts";
-import { GlobalStoreTypes } from "@/Store/global-store/global-store-types.ts";
+import { GlobalStoreKeys } from "@/Store/global-store/global-store-types.ts";
 import { GlobalStore } from "@/Store/global-store/global-store.ts";
 
 export class Router implements Injectable {
@@ -45,7 +45,7 @@ export class Router implements Injectable {
     }
 
     this.clearPage();
-    const isLogin = GlobalStore.getInstance().getState(GlobalStoreTypes.USER);
+    const isLogin = GlobalStore.getInstance().getState(GlobalStoreKeys.USER);
 
     if (path === PAGE_PATH.LOGIN && isLogin) {
       path = PAGE_PATH.MAIN;

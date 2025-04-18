@@ -1,6 +1,6 @@
 import { BaseComponent } from "@/components/base-component.js";
 import type { User } from "@/types/user-list-types.ts";
-import { GlobalStoreTypes } from "@/Store/global-store/global-store-types.ts";
+import { GlobalStoreKeys } from "@/Store/global-store/global-store-types.ts";
 import { GlobalStore } from "@/Store/global-store/global-store.ts";
 
 export class UserListView extends BaseComponent<"ul"> {
@@ -11,7 +11,7 @@ export class UserListView extends BaseComponent<"ul"> {
   public addUsers(userList: User[]): Map<string, HTMLLIElement> {
     const usersMap = new Map<string, HTMLLIElement>();
     const currentUser = GlobalStore.getInstance().getState(
-      GlobalStoreTypes.USER,
+      GlobalStoreKeys.USER,
     )?.login;
     for (const user of userList) {
       if (user.login === currentUser) {
