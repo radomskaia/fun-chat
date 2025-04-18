@@ -6,6 +6,7 @@ import { SessionStorage } from "@/services/session-storage/session-storage.ts";
 import { Validator } from "@/services/validator/validator.ts";
 import { WebSocketService } from "@/services/websocket/websocket-service.ts";
 import { AuthService } from "@/services/auth-service/auth-service.ts";
+import { MessageService } from "@/services/message-service/message-service.ts";
 
 export function registerServices(): void {
   const diContainer = DIContainer.getInstance();
@@ -15,4 +16,5 @@ export function registerServices(): void {
   diContainer.register(ServiceName.VALIDATOR, Validator);
   diContainer.register(ServiceName.WEBSOCKET, WebSocketService);
   diContainer.register(ServiceName.USER_SERVICE, AuthService);
+  diContainer.register(ServiceName.MESSAGE_SERVICE, MessageService);
 }

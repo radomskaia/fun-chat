@@ -9,6 +9,12 @@ import type {
   UserPayload,
   UsersPayload,
 } from "@/services/websocket/websocket-types.ts";
+import type {
+  Message,
+  MessagePayload,
+  MessagesPayload,
+  MessageStatus,
+} from "@/services/message-service/message-types.ts";
 
 export class Validator implements Injectable {
   public name = ServiceName.VALIDATOR;
@@ -20,24 +26,24 @@ export class Validator implements Injectable {
   };
 
   private typesConfig = {
-    [ValidatorTypes.object]: (value: unknown): value is object =>
-      this.isObject(value),
-    [ValidatorTypes.string]: (value: unknown): value is string =>
-      this.isString(value),
-    [ValidatorTypes.number]: (value: unknown): value is number =>
-      this.isNumber(value),
-    [ValidatorTypes.positiveNumber]: (value: unknown): value is number =>
-      this.isPositiveNumber(value),
-    [ValidatorTypes.boolean]: (value: unknown): value is boolean =>
-      this.isBoolean(value),
-    [ValidatorTypes.authData]: (value: unknown): value is AuthData =>
-      this.isAuthData(value),
-    [ValidatorTypes.user]: (value: unknown): value is User =>
-      this.isUserData(value),
-    [ValidatorTypes.usersPayload]: (value: unknown): value is UsersPayload =>
-      this.isUsersPayload(value),
-    [ValidatorTypes.userPayload]: (value: unknown): value is UserPayload =>
-      this.isUserPayload(value),
+    [ValidatorTypes.object]: this.isObject.bind(this),
+    [ValidatorTypes.string]: this.isString.bind(this),
+    [ValidatorTypes.number]: this.isNumber.bind(this),
+    [ValidatorTypes.boolean]: this.isBoolean.bind(this),
+    [ValidatorTypes.authData]: this.isAuthData.bind(this),
+    [ValidatorTypes.usersPayload]: this.isUsersPayload.bind(this),
+    [ValidatorTypes.userPayload]: this.isUserPayload.bind(this),
+    [ValidatorTypes.message]: this.isMessage.bind(this),
+    [ValidatorTypes.messagePayload]: this.isMessagePayload.bind(this),
+    [ValidatorTypes.messagesPayload]: this.isMessagesPayload.bind(this),
+    [ValidatorTypes.isReadedStatusPayload]:
+      this.isReadedStatusPayload.bind(this),
+    [ValidatorTypes.isDeliveredStatusPayload]:
+      this.isDeliveredStatusPayload.bind(this),
+    [ValidatorTypes.isEditedStatusPayload]:
+      this.isEditedStatusPayload.bind(this),
+    [ValidatorTypes.isDeletedStatusPayload]:
+      this.isDeletedStatusPayload.bind(this),
   };
 
   private static isArrayOf<T>(
@@ -95,10 +101,131 @@ export class Validator implements Injectable {
     return this.isUserData(value.user);
   }
 
-  private isUsersPayload(value: unknown): value is UserPayload {
+  private isUsersPayload(value: unknown): value is UsersPayload {
     if (!(this.isObject(value) && "users" in value)) {
       return false;
     }
     return Validator.isArrayOf(value.users, this.isUserData.bind(this));
+  }
+
+  private isMessage(value: unknown): value is Message {
+    if (
+      !(
+        this.isObject(value) &&
+        "id" in value &&
+        "from" in value &&
+        "to" in value &&
+        "text" in value &&
+        "datetime" in value &&
+        "status" in value
+      )
+    ) {
+      return false;
+    }
+    const isString = [value.id, value.from, value.to, value.text];
+    return (
+      isString.every(this.isString.bind(this)) &&
+      this.isPositiveNumber(value.datetime) &&
+      this.isMessageStatus(value.status)
+    );
+  }
+
+  private isReadedStatusPayload(
+    value: unknown,
+  ): value is MessagePayload<Pick<Message, "id" | "status">> {
+    return this.isStatusPayload(value) && this.isReadedStatus(value.status);
+  }
+
+  private isDeliveredStatusPayload(
+    value: unknown,
+  ): value is MessagePayload<Pick<Message, "id" | "status">> {
+    return this.isStatusPayload(value) && this.isDeliveredStatus(value.status);
+  }
+
+  private isDeletedStatusPayload(
+    value: unknown,
+  ): value is MessagePayload<Pick<Message, "id" | "status">> {
+    return this.isStatusPayload(value) && this.isDeletedStatus(value.status);
+  }
+  private isEditedStatusPayload(
+    value: unknown,
+  ): value is MessagePayload<Pick<Message, "id" | "status" | "text">> {
+    return (
+      this.isStatusPayload(value) &&
+      this.isEditedStatus(value.status) &&
+      "text" in value &&
+      this.isString(value.text)
+    );
+  }
+
+  private isStatusPayload(
+    value: unknown,
+  ): value is Pick<Message, "id" | "status"> {
+    if (!(this.isObject(value) && "message" in value)) {
+      return false;
+    }
+    if (!(this.isObject(value.message) && "status" in value.message)) {
+      return false;
+    }
+
+    return this.isMessageStatus(value.message.status);
+  }
+
+  private isMessageStatus(value: unknown): value is MessageStatus {
+    return (
+      this.isReadedStatus(value) &&
+      this.isDeliveredStatus(value) &&
+      this.isEditedStatus(value)
+    );
+  }
+
+  private isReadedStatus(
+    value: unknown,
+  ): value is Pick<MessageStatus, "isReaded"> {
+    if (!(this.isObject(value) && "isReaded" in value)) {
+      return false;
+    }
+    return this.isBoolean(value.isReaded);
+  }
+  private isDeletedStatus(
+    value: unknown,
+  ): value is Pick<MessageStatus, "isDeleted"> {
+    if (!(this.isObject(value) && "isDeleted" in value)) {
+      return false;
+    }
+    return this.isBoolean(value.isDeleted);
+  }
+
+  private isDeliveredStatus(
+    value: unknown,
+  ): value is Pick<MessageStatus, "isDelivered"> {
+    if (!(this.isObject(value) && "isDelivered" in value)) {
+      return false;
+    }
+    return this.isBoolean(value.isDelivered);
+  }
+  private isEditedStatus(
+    value: unknown,
+  ): value is Pick<MessageStatus, "isEdited"> {
+    if (!(this.isObject(value) && "isEdited" in value)) {
+      return false;
+    }
+    return this.isBoolean(value.isEdited);
+  }
+
+  private isMessagePayload(value: unknown): value is MessagesPayload {
+    if (!(this.isObject(value) && "message" in value)) {
+      return false;
+    }
+    return this.isMessage(value.message);
+  }
+
+  private isMessagesPayload(
+    value: unknown,
+  ): value is MessagePayload<Message[]> {
+    if (!(this.isObject(value) && "messages" in value)) {
+      return false;
+    }
+    return Validator.isArrayOf(value.messages, this.isMessage.bind(this));
   }
 }
