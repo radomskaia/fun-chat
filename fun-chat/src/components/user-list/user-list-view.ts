@@ -2,8 +2,14 @@ import { BaseComponent } from "@/components/base-component.js";
 import type { User } from "@/types/user-list-types.ts";
 import { GlobalStoreKeys } from "@/Store/global-store/global-store-types.ts";
 import { GlobalStore } from "@/Store/global-store/global-store.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
+import { UserItem } from "@/components/user-item/user-item.ts";
 
 export class UserListView extends BaseComponent<"ul"> {
+  private messageService = DIContainer.getInstance().getService(
+    ServiceName.MESSAGE_SERVICE,
+  );
   public constructor() {
     super();
   }
@@ -17,17 +23,15 @@ export class UserListView extends BaseComponent<"ul"> {
       if (user.login === currentUser) {
         continue;
       }
-      const [key, value] = this.addUser(user);
-      usersMap.set(key, value);
+      const [id, value] = this.addUser(user);
+      this.messageService.setNewMessagesCount(id);
+      usersMap.set(id, value);
     }
     return usersMap;
   }
 
   public addUser(user: User): [string, HTMLLIElement] {
-    const li = this.createDOMElement({
-      tagName: "li",
-      textContent: user.login,
-    });
+    const li = new UserItem(user.login).getElement();
     this.appendElement(li);
     return [user.login, li];
   }

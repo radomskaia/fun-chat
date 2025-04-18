@@ -3,7 +3,7 @@ import { UserListView } from "@/components/user-list/user-list-view.ts";
 import type { User } from "@/types/user-list-types.ts";
 
 export class UserList implements Component {
-  private view: UserListView;
+  private view;
 
   constructor() {
     this.view = new UserListView();
