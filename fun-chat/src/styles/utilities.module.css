@@ -59,6 +59,10 @@
   width: 100%;
 }
 
+.flexGrow1 {
+  flex-grow: 1;
+}
+
 .noPointerEvents {
   pointer-events: none;
 }
@@ -87,6 +91,14 @@
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.alignSelfStart {
+  align-self: start;
+}
+
+.alignSelfEnd {
+  align-self: end;
 }
 
 @media screen and (max-width: 47rem) {

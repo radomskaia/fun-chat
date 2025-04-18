@@ -1,0 +1,9 @@
+.messageBlock {
+  border: 1px solid var(--primary);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  width: 500px;
+  height: 60vh;
+  text-align: center;
+  background-color: var(--secondary-alpha);
+}

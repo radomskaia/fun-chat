@@ -20,5 +20,8 @@ declare const utilitiesStyles: {
   positionRelative: string;
   marginInline10: string;
   capitalize: string;
+  alignSelfStart: string;
+  alignSelfEnd: string;
+  flexGrow1: string;
 };
 export default utilitiesStyles;

@@ -46,6 +46,11 @@ export class UserBlockView extends BaseComponent<"div"> {
   protected createElement(): HTMLDivElement {
     return this.createDOMElement({
       tagName: "div",
+      classList: [
+        utilitiesStyles.flex,
+        utilitiesStyles.gap20,
+        utilitiesStyles.flexColumn,
+      ],
     });
   }
 

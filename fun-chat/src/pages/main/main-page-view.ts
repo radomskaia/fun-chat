@@ -3,6 +3,7 @@ import { TextButton } from "@/components/buttons/text-button.ts";
 import type { Callback } from "@/types";
 import utilitiesStyles from "@/styles/utilities.module.css";
 import { UserBlock } from "@/components/user-block/user-block.ts";
+import { MessageBlock } from "@/components/message-block/message-block.ts";
 
 export class MainPageView extends BaseComponent<"div"> {
   private userBlock;
@@ -15,14 +16,25 @@ export class MainPageView extends BaseComponent<"div"> {
 
   public refreshUserBlock(): void {
     this.userBlock.getElement().remove();
+    const wrapper = this.createDOMElement({
+      tagName: "div",
+      classList: [utilitiesStyles.flex, utilitiesStyles.gap20],
+    });
     this.userBlock = new UserBlock();
-    this.element.append(this.userBlock.getElement());
+    const messageBlock = new MessageBlock().getElement();
+    wrapper.append(this.userBlock.getElement(), messageBlock);
+    this.element.append(wrapper);
   }
 
   protected createElement(): HTMLDivElement {
     return this.createDOMElement({
       tagName: "div",
-      classList: [utilitiesStyles.container],
+      classList: [
+        utilitiesStyles.flex,
+        utilitiesStyles.container,
+        utilitiesStyles.flexColumn,
+        utilitiesStyles.gap30,
+      ],
     });
   }
 

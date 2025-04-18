@@ -3,6 +3,7 @@ export enum ActionType {
   openSocket = "openSocket",
   updateMessageStatus = "updateMessageStatus",
   editMessage = "editMessage",
+  openChat = "openChat",
 }
 
 export interface Action {
