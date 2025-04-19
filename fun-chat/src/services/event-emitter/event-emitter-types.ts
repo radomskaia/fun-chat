@@ -1,9 +1,6 @@
 export enum ActionType {
   changeRoute = "changeRoute",
   openSocket = "openSocket",
-  updateMessageStatus = "updateMessageStatus",
-  editMessage = "editMessage",
-  openChat = "openChat",
 }
 
 export interface Action {

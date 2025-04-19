@@ -31,7 +31,6 @@ export class MessageForm extends BaseComponent<
     this.addClassList(
       [
         utilitiesStyles.flex,
-        utilitiesStyles.flexColumn,
         utilitiesStyles.gap10,
         utilitiesStyles.alignCenter,
       ],

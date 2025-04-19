@@ -35,7 +35,10 @@ export class AuthService implements Injectable, Observer {
     this.websocketService.requestToServer(RESPONSE_TYPES.LOGIN, data, {
       action: () => {
         if (authData) {
-          this.storeController.dispatch(GlobalStoreKeys.USER, authData);
+          this.storeController.dispatch({
+            type: GlobalStoreKeys.USER,
+            payload: authData,
+          });
         }
         this.router.navigateTo(PAGE_PATH.MAIN);
       },
@@ -49,7 +52,10 @@ export class AuthService implements Injectable, Observer {
       user: authData,
     };
     this.websocketService.requestToServer(RESPONSE_TYPES.LOGOUT, data);
-    this.storeController.dispatch(GlobalStoreKeys.USER, null);
+    this.storeController.dispatch({
+      type: GlobalStoreKeys.USER,
+      payload: null,
+    });
     this.router.navigateTo(PAGE_PATH.LOGIN);
   }
 

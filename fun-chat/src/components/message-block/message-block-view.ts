@@ -99,6 +99,7 @@ export class MessageBlockView extends BaseComponent<"div"> {
         utilitiesStyles.widthFull,
         utilitiesStyles.gap10,
         utilitiesStyles.flexGrow1,
+        styles.messagesField,
       ],
     });
 

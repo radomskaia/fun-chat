@@ -1,37 +1,27 @@
 import type { StoreCallback } from "@/Store/store-types.ts";
 
-export class Store<S> {
+export class Store<S, A extends { type: string }> {
   private state: S;
-  private listeners: StoreCallback<S>[] = [];
+  private readonly reducer;
+  private listeners: StoreCallback<S, A["type"]>[] = [];
 
-  public constructor(initialValue: S) {
+  public constructor(initialValue: S, reducer: (state: S, action: A) => S) {
     this.state = structuredClone(initialValue);
+    this.reducer = reducer;
   }
 
   public getState(): S {
-    if (!this.state) {
-      throw new Error("Store is not initialized");
-    }
     return structuredClone(this.state);
   }
 
-  public dispatch<A extends keyof S>(type: A, payload: S[A]): void {
-    if (!this.state) {
-      throw new Error("Store is not initialized");
-    }
-
-    const previousValue = this.state[type];
-    if (JSON.stringify(previousValue) === JSON.stringify(payload)) {
-      return;
-    }
-
-    this.state = { ...this.state, [type]: payload };
+  public dispatch(action: A): void {
+    this.state = this.reducer(this.state, action);
     for (const listener of this.listeners) {
-      listener(structuredClone(this.state), type);
+      listener(structuredClone(this.state), action.type);
     }
   }
 
-  public subscribe(listener: StoreCallback<S>): () => void {
+  public subscribe(listener: StoreCallback<S, A["type"]>): () => void {
     this.listeners.push(listener);
     return () =>
       (this.listeners = this.listeners.filter(

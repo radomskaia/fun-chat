@@ -2,8 +2,15 @@
   border: 1px solid var(--primary);
   border-radius: var(--border-radius);
   padding: 20px;
-  width: 500px;
+  width: 100%;
   height: 60vh;
   text-align: center;
   background-color: var(--secondary-alpha);
+}
+
+.messagesField {
+  overflow: scroll;
+  scroll-padding-bottom: 10px;
+  scrollbar-color: var(--primary) transparent;
+  scrollbar-width: thin;
 }

@@ -1,19 +1,22 @@
 import type {
+  ActionUnionTypes,
   Message,
   MessagesState,
 } from "@/services/message-service/message-types.ts";
 import { MessagesStateKeys } from "@/services/message-service/message-types.ts";
 import { StoreController } from "@/Store/store-controller.ts";
-import { Store } from "@/Store/store.ts";
-import { StoreObserver } from "@/Store/store-observer.ts";
+import { messageStoreReducer } from "@/services/message-service/message-store-reduser.ts";
 
 export class MessageHistoryStore extends StoreController<
   MessagesState,
-  MessagesStateKeys
+  ActionUnionTypes
 > {
   private static instance: MessageHistoryStore;
-  private constructor(initValue: MessagesState) {
-    super(initValue);
+  private constructor(
+    initValue: MessagesState,
+    reducer: (state: MessagesState, action: ActionUnionTypes) => MessagesState,
+  ) {
+    super(initValue, reducer);
   }
 
   public static getInstance(): MessageHistoryStore {
@@ -22,17 +25,11 @@ export class MessageHistoryStore extends StoreController<
         [MessagesStateKeys.DIALOG_ID]: null,
         [MessagesStateKeys.MESSAGES]: new Map<string, Message>(),
       };
-      MessageHistoryStore.instance = new MessageHistoryStore(initValue);
+      MessageHistoryStore.instance = new MessageHistoryStore(
+        initValue,
+        messageStoreReducer,
+      );
     }
     return MessageHistoryStore.instance;
-  }
-
-  public clearStore(): void {
-    const initValue = {
-      [MessagesStateKeys.DIALOG_ID]: null,
-      [MessagesStateKeys.MESSAGES]: new Map<string, Message>(),
-    };
-    this.store = new Store<MessagesState>(initValue);
-    this.observer = new StoreObserver(this.store);
   }
 }

@@ -1,1 +1,1 @@
-export type StoreCallback<S> = (state: Partial<S>, type?: keyof S) => void;
+export type StoreCallback<S, A> = (state: S, type?: A) => void;

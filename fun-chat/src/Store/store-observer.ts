@@ -1,51 +1,45 @@
 import type { Store } from "@/Store/store.ts";
 import type { StoreCallback } from "@/Store/store-types.ts";
 
-export class StoreObserver<T> {
-  private observers = new Map<keyof T, StoreCallback<T>[]>();
+export class StoreObserver<S, A extends { type: string }> {
+  private observers = new Map<A["type"], StoreCallback<S, A["type"]>[]>();
 
-  public constructor(store: Store<T>) {
-    store.subscribe((data: Partial<T>, type?: keyof T) => {
+  public constructor(store: Store<S, A>) {
+    store.subscribe((data: S, type?: A["type"]) => {
       if (type) {
         this.notify(data, type);
       }
     });
   }
 
-  private static validateState<T>(
-    state: object,
-    data: Partial<T>,
-    type: keyof T,
-  ): state is Partial<T> {
-    const newState = { [type]: data[type] };
-    return JSON.stringify(newState) === JSON.stringify(state);
-  }
-
-  public subscribe(callback: StoreCallback<T>, type: keyof T): () => void {
+  public subscribe(
+    callback: StoreCallback<S, A["type"]>,
+    type: A["type"],
+  ): () => void {
     const observers = this.observers.get(type);
     if (observers) {
       observers.push(callback);
     } else {
       this.observers.set(type, [callback]);
     }
-
+    if (type === "dialogId") {
+      console.log("subscribe", type, this.observers);
+    }
     return () => {
-      const update = observers?.filter((listener) => callback !== listener);
+      const update = this.observers
+        .get(type)
+        ?.filter((listener) => callback !== listener);
       if (update) {
         this.observers.set(type, update);
       }
     };
   }
 
-  private notify(data: Partial<T>, type: keyof T): void {
-    const state = { [type]: data[type] };
-    if (!StoreObserver.validateState(state, data, type)) {
-      return;
-    }
+  private notify(data: S, type: A["type"]): void {
     const observers = this.observers.get(type);
     if (observers) {
       for (const listener of observers) {
-        listener(state);
+        listener(data);
       }
     }
   }

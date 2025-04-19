@@ -4,15 +4,28 @@ import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 import { StoreController } from "@/Store/store-controller.ts";
+import { globalStoreReducer } from "@/Store/global-store/global-store-reducer.ts";
 
-export class GlobalStore extends StoreController<State, GlobalStoreKeys> {
+export class GlobalStore extends StoreController<
+  State,
+  {
+    type: GlobalStoreKeys;
+    payload: State[GlobalStoreKeys];
+  }
+> {
   private static instance: GlobalStore;
   private storageService = DIContainer.getInstance().getService(
     ServiceName.STORAGE,
   );
 
-  private constructor(initValue: State) {
-    super(initValue);
+  private constructor(
+    initValue: State,
+    reducer: (
+      state: State,
+      action: { type: GlobalStoreKeys; payload: State[GlobalStoreKeys] },
+    ) => State,
+  ) {
+    super(initValue, reducer);
     window.addEventListener("beforeunload", () => {
       const user = this.store.getState().user;
       if (user) {
@@ -31,7 +44,7 @@ export class GlobalStore extends StoreController<State, GlobalStoreKeys> {
       const initialState = {
         [GlobalStoreKeys.USER]: authData,
       };
-      GlobalStore.instance = new GlobalStore(initialState);
+      GlobalStore.instance = new GlobalStore(initialState, globalStoreReducer);
     }
     return GlobalStore.instance;
   }

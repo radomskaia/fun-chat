@@ -2,47 +2,42 @@ import type { Component } from "@/services/router/router-type.ts";
 import { MessageBlockView } from "@/components/message-block/message-block-view.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
-import type {
-  Action,
-  Observer,
-} from "@/services/event-emitter/event-emitter-types.ts";
-import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
-import { ValidatorTypes } from "@/services/validator/validator-types.ts";
-// import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
-// import { MessagesStateKeys } from "@/services/message-service/message-types.ts";
+import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
+import {
+  MessagesStateActions,
+  MessagesStateKeys,
+} from "@/services/message-service/message-types.ts";
 
-export class MessageBlock implements Component, Observer {
+export class MessageBlock implements Component {
   private view;
-  private eventEmitter = DIContainer.getInstance().getService(
-    ServiceName.EVENT_EMITTER,
-  );
   private messageService = DIContainer.getInstance().getService(
     ServiceName.MESSAGE_SERVICE,
-  );
-  private validator = DIContainer.getInstance().getService(
-    ServiceName.VALIDATOR,
   );
 
   constructor() {
     this.view = new MessageBlockView();
+    const historyStore = MessageHistoryStore.getInstance();
 
-    this.eventEmitter.subscribe(ActionType.openChat, this);
-    // MessageHistoryStore.getInstance().subscribe(() => {
-    //   const messages = MessageHistoryStore.getInstance().getState();
-    //   this.view.addMessages(messages[MessagesStateKeys.MESSAGES]);
-    // });
+    historyStore.subscribe((state) => {
+      if (state.dialogId) {
+        this.onOpenChat(state.dialogId);
+      }
+    }, MessagesStateActions.SET_DIALOG_ID);
+
+    historyStore.subscribe((store) => {
+      const message = store[MessagesStateKeys.MESSAGES].values().next().value;
+      if (!message) {
+        return;
+      }
+      this.view.addMessages([message]);
+    }, MessagesStateActions.ADD_MESSAGE);
   }
 
-  public update(event: Action): void {
-    if (
-      !(
-        event.type === ActionType.openChat &&
-        this.validator.validate(ValidatorTypes.string, event.data)
-      )
-    ) {
-      return;
-    }
-    const login = event.data;
+  public getElement(): HTMLDivElement {
+    return this.view.getElement();
+  }
+
+  private onOpenChat(login: string): void {
     this.view.createBlock(login, (event: SubmitEvent) => {
       event.preventDefault();
       const data = this.view.getFormData();
@@ -53,9 +48,5 @@ export class MessageBlock implements Component, Observer {
       login,
       this.view.addMessages.bind(this.view),
     );
-  }
-
-  public getElement(): HTMLDivElement {
-    return this.view.getElement();
   }
 }

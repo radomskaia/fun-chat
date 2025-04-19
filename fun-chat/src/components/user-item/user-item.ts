@@ -2,15 +2,11 @@ import type { Component } from "@/services/router/router-type.js";
 import { UserItemView } from "@/components/user-item/user-item-view.ts";
 import { MessageCountStore } from "@/services/message-service/message-count-store.ts";
 import { ZERO } from "@/constants/constants.ts";
-import { ServiceName } from "@/services/di-container/di-container-types.ts";
-import { DIContainer } from "@/services/di-container/di-container.ts";
-import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
+import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
+import { MessagesStateActions } from "@/services/message-service/message-types.ts";
 
 export class UserItem implements Component {
   private view;
-  private eventEmitter = DIContainer.getInstance().getService(
-    ServiceName.EVENT_EMITTER,
-  );
 
   constructor(login: string) {
     this.view = new UserItemView(login);
@@ -28,7 +24,10 @@ export class UserItem implements Component {
     }, login);
 
     this.view.getElement().addEventListener("click", () => {
-      this.eventEmitter.notify({ type: ActionType.openChat, data: login });
+      MessageHistoryStore.getInstance().dispatch({
+        type: MessagesStateActions.SET_DIALOG_ID,
+        payload: login,
+      });
     });
   }
 

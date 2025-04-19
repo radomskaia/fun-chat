@@ -2,26 +2,29 @@ import { Store } from "@/Store/store.ts";
 import { StoreObserver } from "@/Store/store-observer.ts";
 import type { StoreCallback } from "@/Store/store-types.ts";
 
-export abstract class StoreController<S, K extends keyof S> {
+export abstract class StoreController<S, A extends { type: string }> {
   protected store;
   protected observer;
 
-  protected constructor(initialValue: S) {
-    this.store = new Store<S>(initialValue);
+  protected constructor(initialValue: S, reducer: (state: S, action: A) => S) {
+    this.store = new Store<S, A>(initialValue, reducer);
     this.observer = new StoreObserver(this.store);
   }
 
   public getState(): S;
-  public getState<A extends K>(type: A): S[A];
-  public getState<A extends K>(type?: A): S | S[A] {
+  public getState<K extends keyof S>(key: K): S[K];
+  public getState<K extends keyof S>(key?: K): S | S[K] {
     const state = this.store.getState();
-    if (type) {
-      return state[type];
+    if (key) {
+      return state[key];
     }
-    return this.store.getState();
+    return state;
   }
 
-  public subscribe(listener: StoreCallback<S>, type?: K): () => void {
+  public subscribe(
+    listener: StoreCallback<S, A["type"]>,
+    type?: A["type"],
+  ): () => void {
     let unsubscribe: () => void;
     unsubscribe = type
       ? this.observer.subscribe(listener, type)
@@ -29,7 +32,7 @@ export abstract class StoreController<S, K extends keyof S> {
     return unsubscribe;
   }
 
-  public dispatch<A extends K>(type: A, payload: S[A]): void {
-    this.store.dispatch(type, payload);
+  public dispatch(option: A): void {
+    this.store.dispatch(option);
   }
 }
