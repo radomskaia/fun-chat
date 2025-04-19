@@ -6,24 +6,23 @@ import { UserBlock } from "@/components/user-block/user-block.ts";
 import { MessageBlock } from "@/components/message-block/message-block.ts";
 
 export class MainPageView extends BaseComponent<"div"> {
-  private userBlock;
+  private mainWrapper: HTMLDivElement | null = null;
   constructor(username: string, callback: Callback) {
     super();
     this.addHeader(username, callback);
-    this.userBlock = new UserBlock();
-    this.element.append(this.userBlock.getElement());
+    this.createMainBlock();
   }
 
-  public refreshUserBlock(): void {
-    this.userBlock.getElement().remove();
-    const wrapper = this.createDOMElement({
+  public createMainBlock(): void {
+    this.mainWrapper?.remove();
+    this.mainWrapper = this.createDOMElement({
       tagName: "div",
       classList: [utilitiesStyles.flex, utilitiesStyles.gap20],
     });
-    this.userBlock = new UserBlock();
+    const userBlock = new UserBlock();
     const messageBlock = new MessageBlock().getElement();
-    wrapper.append(this.userBlock.getElement(), messageBlock);
-    this.element.append(wrapper);
+    this.mainWrapper.append(userBlock.getElement(), messageBlock);
+    this.element.append(this.mainWrapper);
   }
 
   protected createElement(): HTMLDivElement {

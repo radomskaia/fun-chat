@@ -122,7 +122,8 @@ export class MessageService implements Injectable {
   public setNewMessagesCount(recipientLogin: string): void {
     this.getMessagesHistory(recipientLogin, (data: Message[]): void => {
       const newMessages = data.filter(
-        (message: Message) => !message.status.isReaded,
+        (message: Message) =>
+          !message.status.isReaded && message.from === recipientLogin,
       );
       this.countStore.dispatch({
         type: recipientLogin,

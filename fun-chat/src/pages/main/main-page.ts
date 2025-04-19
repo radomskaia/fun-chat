@@ -31,7 +31,7 @@ export class MainPage implements Component, Observer {
     if (!login) {
       return;
     }
-    this.view.refreshUserBlock();
+    this.view.createMainBlock();
   }
 
   public getElement(): HTMLDivElement {

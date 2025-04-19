@@ -9,7 +9,7 @@ import {
 } from "@/services/message-service/message-types.ts";
 
 export class MessageBlock implements Component {
-  private view;
+  private readonly view;
   private messageService = DIContainer.getInstance().getService(
     ServiceName.MESSAGE_SERVICE,
   );
