@@ -3,7 +3,7 @@ import styles from "@/components/message-block/message-block.module.css";
 import utilitiesStyles from "@/styles/utilities.module.css";
 import type { Message } from "@/services/message-service/message-types.ts";
 import { MessageForm } from "@/components/form/message-form.ts";
-import { EMPTY_STRING } from "@/constants/constants.ts";
+import { EMPTY_STRING, ZERO } from "@/constants/constants.ts";
 
 export class MessageBlockView extends BaseComponent<"div"> {
   private username: string | null = null;
@@ -36,22 +36,36 @@ export class MessageBlockView extends BaseComponent<"div"> {
   }
 
   public addMessages(messages: Message[]): void {
+    if (!this.messageList || messages.length === ZERO) {
+      return;
+    }
+    this.messageList.textContent = EMPTY_STRING;
+    for (const message of messages) {
+      this.addMessage(message);
+    }
+  }
+
+  public addMessage(message: Message): void {
     if (!this.messageList) {
       return;
     }
-    for (const message of messages) {
-      const justifyClass =
-        message.from === this.username
-          ? utilitiesStyles.alignSelfStart
-          : utilitiesStyles.alignSelfEnd;
+    const justifyClass =
+      message.from === this.username
+        ? utilitiesStyles.alignSelfStart
+        : utilitiesStyles.alignSelfEnd;
+    const messageItem = this.createDOMElement({
+      tagName: "li",
+      textContent: message.text,
+      classList: [justifyClass],
+    });
+    this.messageList.append(messageItem);
+  }
 
-      const messageItem = this.createDOMElement({
-        tagName: "li",
-        textContent: message.text,
-        classList: [justifyClass],
-      });
-      this.messageList.append(messageItem);
-    }
+  public scrollToBottom(): void {
+    this.messageList?.scrollTo({
+      top: this.messageList.scrollHeight,
+      behavior: "smooth",
+    });
   }
 
   protected createElement(): HTMLDivElement {
@@ -93,6 +107,7 @@ export class MessageBlockView extends BaseComponent<"div"> {
   private createMessageList(): void {
     this.messageList = this.createDOMElement({
       tagName: "ul",
+      textContent: "Write your first message...",
       classList: [
         utilitiesStyles.flex,
         utilitiesStyles.flexColumn,

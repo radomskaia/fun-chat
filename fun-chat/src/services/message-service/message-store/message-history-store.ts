@@ -5,7 +5,7 @@ import type {
 } from "@/services/message-service/message-types.ts";
 import { MessagesStateKeys } from "@/services/message-service/message-types.ts";
 import { StoreController } from "@/Store/store-controller.ts";
-import { messageStoreReducer } from "@/services/message-service/message-store-reduser.ts";
+import { messageStoreReducer } from "@/services/message-service/message-store/message-store-reduser.ts";
 
 export class MessageHistoryStore extends StoreController<
   MessagesState,

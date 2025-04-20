@@ -23,7 +23,7 @@ export enum MessagesStateActions {
 
 export interface PayloadTypes {
   [MessagesStateActions.SET_DIALOG_ID]: string | null;
-  [MessagesStateActions.SET_MESSAGES]: Map<string, Message>;
+  [MessagesStateActions.SET_MESSAGES]: Message[];
   [MessagesStateActions.ADD_MESSAGE]: [string, Message];
   [MessagesStateActions.DELETE_MESSAGE]: string;
   [MessagesStateActions.EDIT_MESSAGE]: MessagePayload<

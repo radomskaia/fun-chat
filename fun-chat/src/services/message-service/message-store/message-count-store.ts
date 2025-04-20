@@ -1,6 +1,6 @@
 import { StoreController } from "@/Store/store-controller.ts";
 import type { CountState } from "@/services/message-service/message-types.ts";
-import { messageCountStoreReducer } from "@/services/message-service/message-count-reduser.ts";
+import { messageCountStoreReducer } from "@/services/message-service/message-store/message-count-reduser.ts";
 
 export class MessageCountStore extends StoreController<
   CountState,

@@ -2,7 +2,7 @@ import type { Injectable } from "@/services/di-container/di-container-types.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
-import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
+import { MessageHistoryStore } from "@/services/message-service/message-store/message-history-store.ts";
 import { ValidatorTypes } from "@/services/validator/validator-types.ts";
 import type {
   Message,
@@ -10,7 +10,7 @@ import type {
 } from "@/services/message-service/message-types.ts";
 import { MessagesStateActions } from "@/services/message-service/message-types.ts";
 import { MessagesStateKeys } from "@/services/message-service/message-types.ts";
-import { MessageCountStore } from "@/services/message-service/message-count-store.ts";
+import { MessageCountStore } from "@/services/message-service/message-store/message-count-store.ts";
 import { EMPTY_STRING, ONE } from "@/constants/constants.ts";
 import { STATUS_TYPES } from "@/services/message-service/message-constants.ts";
 
@@ -92,6 +92,10 @@ export class MessageService implements Injectable {
         if (!this.validator.validate(ValidatorTypes.messagesPayload, data)) {
           return;
         }
+        this.historyStore.dispatch({
+          type: MessagesStateActions.SET_MESSAGES,
+          payload: data.messages,
+        });
         callback(data.messages);
       },
       error: (message: string) => console.error(message),

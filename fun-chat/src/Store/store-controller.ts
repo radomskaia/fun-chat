@@ -22,7 +22,7 @@ export abstract class StoreController<S, A extends { type: string }> {
   }
 
   public subscribe(
-    listener: StoreCallback<S, A["type"]>,
+    listener: StoreCallback<S, A>,
     type?: A["type"],
   ): () => void {
     let unsubscribe: () => void;

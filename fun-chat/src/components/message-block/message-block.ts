@@ -2,11 +2,12 @@ import type { Component } from "@/services/router/router-type.ts";
 import { MessageBlockView } from "@/components/message-block/message-block-view.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ServiceName } from "@/services/di-container/di-container-types.ts";
-import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
+import { MessageHistoryStore } from "@/services/message-service/message-store/message-history-store.ts";
 import {
   MessagesStateActions,
-  MessagesStateKeys,
+  // MessagesStateKeys,
 } from "@/services/message-service/message-types.ts";
+import { ONE } from "@/constants/constants.ts";
 
 export class MessageBlock implements Component {
   private readonly view;
@@ -24,12 +25,16 @@ export class MessageBlock implements Component {
       }
     }, MessagesStateActions.SET_DIALOG_ID);
 
-    historyStore.subscribe((store) => {
-      const message = store[MessagesStateKeys.MESSAGES].values().next().value;
-      if (!message) {
+    historyStore.subscribe((_, action) => {
+      if (
+        !action?.payload ||
+        action.type !== MessagesStateActions.ADD_MESSAGE
+      ) {
         return;
       }
-      this.view.addMessages([message]);
+      const message = action.payload[ONE];
+      this.view.addMessage(message);
+      this.view.scrollToBottom();
     }, MessagesStateActions.ADD_MESSAGE);
   }
 
@@ -44,9 +49,9 @@ export class MessageBlock implements Component {
       this.messageService.sendMessage(data, login);
     });
 
-    this.messageService.getMessagesHistory(
-      login,
-      this.view.addMessages.bind(this.view),
-    );
+    this.messageService.getMessagesHistory(login, (data) => {
+      this.view.addMessages(data);
+      this.view.scrollToBottom();
+    });
   }
 }

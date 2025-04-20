@@ -13,20 +13,22 @@ export function messageStoreReducer(
 ): MessagesState {
   switch (action.type) {
     case MessagesStateActions.SET_MESSAGES: {
-      return { ...state, messages: action.payload ?? state.messages };
+      const messages = new Map<string, Message>();
+      for (const message of action.payload) {
+        messages.set(message.id, message);
+      }
+      return { ...state, messages: messages };
     }
     case MessagesStateActions.SET_DIALOG_ID: {
       return { ...state, dialogId: action.payload };
     }
     case MessagesStateActions.ADD_MESSAGE: {
-      const messages = state.messages;
-      messages.set(...action.payload);
-      return { ...state, messages: messages };
+      state.messages.set(...action.payload);
+      return { ...state, messages: state.messages };
     }
     case MessagesStateActions.DELETE_MESSAGE: {
-      const messages = state.messages;
-      messages.delete(action.payload);
-      return { ...state, messages: messages };
+      state.messages.delete(action.payload);
+      return { ...state, messages: state.messages };
     }
     case MessagesStateActions.EDIT_MESSAGE: {
       return changeStatus(state, action.payload, "isEdited");

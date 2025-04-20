@@ -1,8 +1,8 @@
 import type { Component } from "@/services/router/router-type.js";
 import { UserItemView } from "@/components/user-item/user-item-view.ts";
-import { MessageCountStore } from "@/services/message-service/message-count-store.ts";
+import { MessageCountStore } from "@/services/message-service/message-store/message-count-store.ts";
 import { ZERO } from "@/constants/constants.ts";
-import { MessageHistoryStore } from "@/services/message-service/message-history-store.ts";
+import { MessageHistoryStore } from "@/services/message-service/message-store/message-history-store.ts";
 import { MessagesStateActions } from "@/services/message-service/message-types.ts";
 
 export class UserItem implements Component {

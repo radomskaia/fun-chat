@@ -2,20 +2,17 @@ import type { Store } from "@/Store/store.ts";
 import type { StoreCallback } from "@/Store/store-types.ts";
 
 export class StoreObserver<S, A extends { type: string }> {
-  private observers = new Map<A["type"], StoreCallback<S, A["type"]>[]>();
+  private observers = new Map<A["type"], StoreCallback<S, A>[]>();
 
   public constructor(store: Store<S, A>) {
-    store.subscribe((data: S, type?: A["type"]) => {
-      if (type) {
-        this.notify(data, type);
+    store.subscribe((data: S, action?: A) => {
+      if (action) {
+        this.notify(data, action);
       }
     });
   }
 
-  public subscribe(
-    callback: StoreCallback<S, A["type"]>,
-    type: A["type"],
-  ): () => void {
+  public subscribe(callback: StoreCallback<S, A>, type: A["type"]): () => void {
     const observers = this.observers.get(type);
     if (observers) {
       observers.push(callback);
@@ -35,11 +32,11 @@ export class StoreObserver<S, A extends { type: string }> {
     };
   }
 
-  private notify(data: S, type: A["type"]): void {
-    const observers = this.observers.get(type);
+  private notify(data: S, action: A): void {
+    const observers = this.observers.get(action.type);
     if (observers) {
       for (const listener of observers) {
-        listener(data);
+        listener(data, action);
       }
     }
   }
