@@ -14,9 +14,6 @@ export class UserItem implements Component {
 
     MessageCountStore.getInstance().subscribe((state) => {
       const count = state[user.login];
-      if (!count) {
-        return;
-      }
       if (count === ZERO) {
         this.view.removeCounter();
       } else {

@@ -11,7 +11,7 @@ import type {
 import { MessagesStateActions } from "@/services/message-service/message-types.ts";
 import { MessagesStateKeys } from "@/services/message-service/message-types.ts";
 import { MessageCountStore } from "@/services/message-service/message-store/message-count-store.ts";
-import { EMPTY_STRING, ONE } from "@/constants/constants.ts";
+import { EMPTY_STRING, ONE, ZERO } from "@/constants/constants.ts";
 import { STATUS_TYPES } from "@/services/message-service/message-constants.ts";
 
 export class MessageService implements Injectable {
@@ -105,19 +105,30 @@ export class MessageService implements Injectable {
   public changeMessageStatus(
     messageId: string,
     status: keyof typeof STATUS_TYPES,
-    callback: (data: Pick<Message, "id" | "status">) => void,
+    callback?: (data: Pick<Message, "id" | "status">) => void,
   ): void {
     const data = {
       message: {
         id: messageId,
       },
     };
+    const login = this.historyStore.getState(
+      MessagesStateKeys.DIALOG_ID,
+    )?.login;
+    if (login && status === STATUS_TYPES.READ) {
+      this.countStore.dispatch({
+        type: login,
+        payload: ZERO,
+      });
+    }
     this.websocketService.requestToServer(RESPONSE_TYPES[status], data, {
       action: (data: unknown): void => {
         if (!this.validator.validate(ValidatorTypes.messagePayload, data)) {
           return;
         }
-        callback(data.message);
+        if (callback) {
+          callback(data.message);
+        }
       },
       error: (message: string) => console.error(message),
     });
@@ -158,6 +169,7 @@ export class MessageService implements Injectable {
         type: MessagesStateActions.ADD_MESSAGE,
         payload: [data.message.id, data.message],
       });
+      this.changeMessageStatus(data.message.id, STATUS_TYPES.READ);
     } else {
       const key = data.message.from;
       const count = this.countStore.getState();
