@@ -4,15 +4,16 @@ import { MessageCountStore } from "@/services/message-service/message-store/mess
 import { ZERO } from "@/constants/constants.ts";
 import { MessageHistoryStore } from "@/services/message-service/message-store/message-history-store.ts";
 import { MessagesStateActions } from "@/services/message-service/message-types.ts";
+import type { User } from "@/types/user-list-types.ts";
 
 export class UserItem implements Component {
   private view;
 
-  constructor(login: string) {
-    this.view = new UserItemView(login);
+  constructor(user: User) {
+    this.view = new UserItemView(user.login);
 
     MessageCountStore.getInstance().subscribe((state) => {
-      const count = state[login];
+      const count = state[user.login];
       if (!count) {
         return;
       }
@@ -21,12 +22,12 @@ export class UserItem implements Component {
       } else {
         this.view.addCounter(count);
       }
-    }, login);
+    }, user.login);
 
     this.view.getElement().addEventListener("click", () => {
       MessageHistoryStore.getInstance().dispatch({
         type: MessagesStateActions.SET_DIALOG_ID,
-        payload: login,
+        payload: user,
       });
     });
   }

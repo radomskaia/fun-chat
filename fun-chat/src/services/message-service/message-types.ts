@@ -1,4 +1,5 @@
 import type { ValidatorTypes } from "@/services/validator/validator-types.ts";
+import type { User } from "@/types/user-list-types.ts";
 
 export enum MessagesStateKeys {
   DIALOG_ID = "dialogId",
@@ -6,7 +7,7 @@ export enum MessagesStateKeys {
 }
 
 export interface MessagesState {
-  [MessagesStateKeys.DIALOG_ID]: string | null;
+  [MessagesStateKeys.DIALOG_ID]: User | null;
   [MessagesStateKeys.MESSAGES]: Map<string, Message>;
 }
 
@@ -22,7 +23,7 @@ export enum MessagesStateActions {
 }
 
 export interface PayloadTypes {
-  [MessagesStateActions.SET_DIALOG_ID]: string | null;
+  [MessagesStateActions.SET_DIALOG_ID]: User | null;
   [MessagesStateActions.SET_MESSAGES]: Message[];
   [MessagesStateActions.ADD_MESSAGE]: [string, Message];
   [MessagesStateActions.DELETE_MESSAGE]: string;

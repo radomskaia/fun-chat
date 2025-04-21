@@ -150,8 +150,10 @@ export class MessageService implements Injectable {
     if (!this.validator.validate(ValidatorTypes.messagePayload, data)) {
       return;
     }
-    const messageState = this.historyStore.getState();
-    if (data.message.from === messageState[MessagesStateKeys.DIALOG_ID]) {
+    const dialogID = this.historyStore.getState(
+      MessagesStateKeys.DIALOG_ID,
+    )?.login;
+    if (data.message.from === dialogID) {
       this.historyStore.dispatch({
         type: MessagesStateActions.ADD_MESSAGE,
         payload: [data.message.id, data.message],

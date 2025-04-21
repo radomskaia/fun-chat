@@ -4,21 +4,54 @@ import utilitiesStyles from "@/styles/utilities.module.css";
 import type { Message } from "@/services/message-service/message-types.ts";
 import { MessageForm } from "@/components/form/message-form.ts";
 import { EMPTY_STRING, ZERO } from "@/constants/constants.ts";
+import type { User } from "@/types/user-list-types.ts";
+import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
+import { ValidatorTypes } from "@/services/validator/validator-types.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 
 export class MessageBlockView extends BaseComponent<"div"> {
-  private username: string | null = null;
+  private user: User | null = null;
   private messageList: HTMLUListElement | null = null;
   private messageForm: MessageForm | null = null;
+  private statusElement: HTMLParagraphElement | null = null;
+
   public constructor() {
     super();
+    const websocketService = DIContainer.getInstance().getService(
+      ServiceName.WEBSOCKET,
+    );
+    const validator = DIContainer.getInstance().getService(
+      ServiceName.VALIDATOR,
+    );
+    websocketService.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGIN, {
+      action: (data: unknown) => {
+        if (
+          validator.validate(ValidatorTypes.userPayload, data) &&
+          data.user.login === this.user?.login
+        ) {
+          this.changeStatus(data.user);
+        }
+      },
+    });
+    websocketService.requestFromServer(RESPONSE_TYPES.EXTERNAL_LOGOUT, {
+      action: (data: unknown) => {
+        if (
+          validator.validate(ValidatorTypes.userPayload, data) &&
+          data.user.login === this.user?.login
+        ) {
+          this.changeStatus(data.user);
+        }
+      },
+    });
   }
 
   public createBlock(
-    login: string,
+    user: User,
     formHandler: (event: SubmitEvent) => void,
   ): void {
     this.element.textContent = EMPTY_STRING;
-    this.createNameRow(login);
+    this.createNameRow(user);
     this.createMessageList();
     this.createMessageInput(formHandler);
   }
@@ -50,7 +83,7 @@ export class MessageBlockView extends BaseComponent<"div"> {
       return;
     }
     const justifyClass =
-      message.from === this.username
+      message.from === this.user?.login
         ? utilitiesStyles.alignSelfStart
         : utilitiesStyles.alignSelfEnd;
     const messageItem = this.createDOMElement({
@@ -81,7 +114,7 @@ export class MessageBlockView extends BaseComponent<"div"> {
     });
   }
 
-  private createNameRow(login: string): void {
+  private createNameRow(user: User): void {
     const nameRow = this.createDOMElement({
       tagName: "div",
       classList: [
@@ -91,17 +124,24 @@ export class MessageBlockView extends BaseComponent<"div"> {
         utilitiesStyles.widthFull,
       ],
     });
-    this.username = login;
+    this.user = user;
     this.element.append(nameRow);
     const name = this.createDOMElement({
       tagName: "p",
-      textContent: login,
+      textContent: user.login,
     });
     const status = this.createDOMElement({
       tagName: "p",
-      textContent: "online or offline",
     });
+    this.statusElement = status;
+    this.changeStatus(user);
     nameRow.append(name, status);
+  }
+
+  private changeStatus(user: User): void {
+    if (this.statusElement) {
+      this.statusElement.textContent = user.isLogined ? "online" : "offline";
+    }
   }
 
   private createMessageList(): void {

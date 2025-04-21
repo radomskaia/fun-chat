@@ -8,6 +8,7 @@ import {
   // MessagesStateKeys,
 } from "@/services/message-service/message-types.ts";
 import { ONE } from "@/constants/constants.ts";
+import type { User } from "@/types/user-list-types.ts";
 
 export class MessageBlock implements Component {
   private readonly view;
@@ -42,14 +43,14 @@ export class MessageBlock implements Component {
     return this.view.getElement();
   }
 
-  private onOpenChat(login: string): void {
-    this.view.createBlock(login, (event: SubmitEvent) => {
+  private onOpenChat(user: User): void {
+    this.view.createBlock(user, (event: SubmitEvent) => {
       event.preventDefault();
       const data = this.view.getFormData();
-      this.messageService.sendMessage(data, login);
+      this.messageService.sendMessage(data, user.login);
     });
 
-    this.messageService.getMessagesHistory(login, (data) => {
+    this.messageService.getMessagesHistory(user.login, (data) => {
       this.view.addMessages(data);
       this.view.scrollToBottom();
     });

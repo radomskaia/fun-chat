@@ -31,7 +31,7 @@ export class UserListView extends BaseComponent<"ul"> {
   }
 
   public addUser(user: User): [string, HTMLLIElement] {
-    const li = new UserItem(user.login).getElement();
+    const li = new UserItem(user).getElement();
     this.appendElement(li);
     return [user.login, li];
   }
