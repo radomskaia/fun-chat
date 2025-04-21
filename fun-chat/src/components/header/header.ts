@@ -3,7 +3,10 @@ import styles from "@/components/header/header.module.css";
 import { BaseComponent } from "@/components/base-component.ts";
 import { ThemeButton } from "@/components/buttons/settings/theme-button.ts";
 import { ThemeService } from "@/services/settings/theme-service.ts";
-import { APP_NAME } from "@/constants/constants.ts";
+import { APP_NAME, PAGE_PATH } from "@/constants/constants.ts";
+import { DIContainer } from "@/services/di-container/di-container.ts";
+import { TextButton } from "@/components/buttons/text-button.ts";
+import { ServiceName } from "@/services/di-container/di-container-types.ts";
 
 export class Header extends BaseComponent<"header"> {
   private readonly settingsButton = {
@@ -13,12 +16,10 @@ export class Header extends BaseComponent<"header"> {
     },
   };
   private readonly settingsWrapper: HTMLDivElement;
-  private readonly pagesWrapper: HTMLDivElement;
   constructor() {
     super();
     this.settingsWrapper = this.createSettingsWrapper();
-    this.pagesWrapper = this.createPagesWrapper();
-    this.appendElement(this.pagesWrapper, this.settingsWrapper);
+    this.appendElement(this.settingsWrapper);
   }
 
   public addSettingsButton(buttonName: keyof typeof this.settingsButton): this {
@@ -48,7 +49,12 @@ export class Header extends BaseComponent<"header"> {
       classList: [styles.headerPrimary],
     });
 
-    header.append(headerPrimary);
+    const aboutButton = new TextButton("About", () => {
+      DIContainer.getInstance()
+        .getService(ServiceName.ROUTER)
+        .navigateTo(PAGE_PATH.ABOUT);
+    }).getElement();
+    header.append(headerPrimary, aboutButton);
     return header;
   }
 
@@ -60,17 +66,6 @@ export class Header extends BaseComponent<"header"> {
         utilitiesStyles.center,
         utilitiesStyles.gap30,
         utilitiesStyles.marginInline10,
-      ],
-    });
-  }
-
-  private createPagesWrapper(): HTMLDivElement {
-    return this.createDOMElement({
-      tagName: "div",
-      classList: [
-        utilitiesStyles.flex,
-        utilitiesStyles.center,
-        utilitiesStyles.gap30,
       ],
     });
   }
