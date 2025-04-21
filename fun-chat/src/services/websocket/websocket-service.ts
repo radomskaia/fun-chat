@@ -14,7 +14,8 @@ export class WebSocketService implements Injectable {
   private socket: WebSocket;
   private responseActions = new Map<
     string,
-    { error?: (error: string) => void; action: (data?: unknown) => void }
+    | { error?: (error: string) => void; action: (data?: unknown) => void }
+    | { action: (data?: unknown) => void }[]
   >();
   private diContainer = DIContainer.getInstance();
   private url = API_URL;
@@ -45,7 +46,12 @@ export class WebSocketService implements Injectable {
       action: (data?: unknown) => void;
     },
   ): void {
-    this.responseActions.set(type, action);
+    const stack = this.responseActions.get(type);
+    if (stack && Array.isArray(stack)) {
+      stack.push(action);
+    } else {
+      this.responseActions.set(type, [action]);
+    }
   }
 
   private connect(): void {
@@ -88,7 +94,13 @@ export class WebSocketService implements Injectable {
     const data = JSON.parse(event.data);
     let id: string;
     id = data.id || data.type;
-    const action = this.responseActions.get(id);
+    let action = this.responseActions.get(id);
+    if (Array.isArray(action)) {
+      for (const item of action) {
+        item.action(data.payload);
+      }
+      return;
+    }
     if (data.type === RESPONSE_TYPES.ERROR && action?.error) {
       action.error(data.payload.error);
     } else {
