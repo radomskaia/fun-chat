@@ -7,5 +7,6 @@ declare const styles: {
   input: string;
   wrapper: string;
   validText: string;
+  spinner: string;
 };
 export default styles;

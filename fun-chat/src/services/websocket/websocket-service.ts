@@ -7,6 +7,7 @@ import {
 import { RESPONSE_TYPES } from "@/services/websocket/websocket-types.ts";
 import { DIContainer } from "@/services/di-container/di-container.ts";
 import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
+import { ReconnectModal } from "@/components/modal/reconnect-modal.ts";
 
 export class WebSocketService implements Injectable {
   public name = ServiceName.WEBSOCKET;
@@ -17,7 +18,7 @@ export class WebSocketService implements Injectable {
   >();
   private diContainer = DIContainer.getInstance();
   private url = API_URL;
-
+  private reconnectModal = new ReconnectModal();
   constructor() {
     this.socket = new WebSocket(this.url);
     this.connect();
@@ -50,16 +51,17 @@ export class WebSocketService implements Injectable {
   private connect(): void {
     if (this.socket.readyState === WebSocket.CLOSED) {
       this.socket = new WebSocket(this.url);
+      this.reconnectModal.showModal();
     }
 
     this.socket.addEventListener("open", () => {
       this.diContainer
         .getService(ServiceName.EVENT_EMITTER)
         .notify({ type: ActionType.openSocket });
+      this.reconnectModal.close();
     });
 
     this.socket.addEventListener("close", () => {
-      console.log("disconnected");
       setTimeout(() => {
         this.connect();
       }, RECONNECT_INTERVAL);
