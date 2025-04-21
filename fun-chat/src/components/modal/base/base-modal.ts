@@ -14,9 +14,12 @@ export abstract class BaseModal extends BaseComponent<"dialog"> {
     });
   }
 
-  public showModal(): void {
+  public showModal(content?: string): void {
     document.body.append(this.element);
     try {
+      if (content) {
+        this.addContent(content);
+      }
       this.element.showModal();
     } catch (error) {
       errorHandler(error);
@@ -51,5 +54,5 @@ export abstract class BaseModal extends BaseComponent<"dialog"> {
     return modalWrapper;
   }
 
-  protected abstract addContent(): HTMLElement;
+  protected abstract addContent(content?: string): void;
 }

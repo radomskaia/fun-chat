@@ -8,6 +8,7 @@ import { GlobalStoreKeys } from "@/Store/global-store/global-store-types.ts";
 import type { Observer } from "@/services/event-emitter/event-emitter-types.ts";
 import { ActionType } from "@/services/event-emitter/event-emitter-types.ts";
 import { GlobalStore } from "@/Store/global-store/global-store.ts";
+import { LoginErrorModal } from "@/components/modal/login-error-modal.ts";
 
 export class AuthService implements Injectable, Observer {
   public name = ServiceName.USER_SERVICE;
@@ -16,11 +17,13 @@ export class AuthService implements Injectable, Observer {
   );
   private storeController = GlobalStore.getInstance();
   private router = DIContainer.getInstance().getService(ServiceName.ROUTER);
+  private modal;
 
   constructor() {
     DIContainer.getInstance()
       .getService(ServiceName.EVENT_EMITTER)
       .subscribe(ActionType.openSocket, this);
+    this.modal = new LoginErrorModal();
   }
 
   public login(authData?: AuthData | null): void {
@@ -42,7 +45,9 @@ export class AuthService implements Injectable, Observer {
         }
         this.router.navigateTo(PAGE_PATH.MAIN);
       },
-      error: (error: string) => console.log(error),
+      error: (error: string) => {
+        this.modal.showModal(error);
+      },
     });
   }
 
