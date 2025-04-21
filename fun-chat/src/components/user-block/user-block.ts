@@ -28,6 +28,9 @@ export class UserBlock implements Component {
       action: (data: unknown) => {
         if (this.validator.validate(ValidatorTypes.userPayload, data)) {
           this.addUser(data.user, "online");
+          DIContainer.getInstance()
+            .getService(ServiceName.MESSAGE_SERVICE)
+            .setNewMessagesCount(data.user.login);
         }
       },
     });
