@@ -1,0 +1,9 @@
+.mainBlock {
+  flex-direction: row;
+}
+
+@media (max-width: 40em) {
+  .mainBlock {
+    flex-direction: column;
+  }
+}

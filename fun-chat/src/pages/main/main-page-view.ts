@@ -5,6 +5,7 @@ import utilitiesStyles from "@/styles/utilities.module.css";
 import { UserBlock } from "@/components/user-block/user-block.ts";
 import { MessageBlock } from "@/components/message-block/message-block.ts";
 import { Footer } from "@/components/footer/footer.ts";
+import styles from "@/pages/main/main-page.module.css";
 
 export class MainPageView extends BaseComponent<"div"> {
   private mainWrapper: HTMLDivElement | null = null;
@@ -20,7 +21,11 @@ export class MainPageView extends BaseComponent<"div"> {
     this.mainWrapper?.remove();
     this.mainWrapper = this.createDOMElement({
       tagName: "div",
-      classList: [utilitiesStyles.flex, utilitiesStyles.gap20],
+      classList: [
+        utilitiesStyles.flex,
+        styles.mainBlock,
+        utilitiesStyles.gap20,
+      ],
     });
     const userBlock = new UserBlock();
     const messageBlock = new MessageBlock().getElement();

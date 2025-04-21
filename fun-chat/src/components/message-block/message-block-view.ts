@@ -56,7 +56,7 @@ export class MessageBlockView extends BaseComponent<"div"> {
     const messageItem = this.createDOMElement({
       tagName: "li",
       textContent: message.text,
-      classList: [justifyClass],
+      classList: [justifyClass, styles.message],
     });
     this.messageList.append(messageItem);
   }
