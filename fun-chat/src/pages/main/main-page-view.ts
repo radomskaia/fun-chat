@@ -4,6 +4,7 @@ import type { Callback } from "@/types";
 import utilitiesStyles from "@/styles/utilities.module.css";
 import { UserBlock } from "@/components/user-block/user-block.ts";
 import { MessageBlock } from "@/components/message-block/message-block.ts";
+import { Footer } from "@/components/footer/footer.ts";
 
 export class MainPageView extends BaseComponent<"div"> {
   private mainWrapper: HTMLDivElement | null = null;
@@ -11,6 +12,8 @@ export class MainPageView extends BaseComponent<"div"> {
     super();
     this.addHeader(username, callback);
     this.createMainBlock();
+    const footer = new Footer().getElement();
+    this.element.append(footer);
   }
 
   public createMainBlock(): void {
