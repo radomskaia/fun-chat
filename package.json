@@ -9,14 +9,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "deploy": "npm run build && npx gh-pages -d dist -e fun-chat",
-    "ci:format": "prettier --check .",
+    "deploy": "npm run build && npx gh-pages -d dist",
+    "ci:format": "prettier --check",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --ext ts --fix .",
     "stylelint": "stylelint \"**/*.css\"",
     "stylelint:fix": "stylelint \"**/*.css\" --fix",
-    "prepare": "cd .. && husky fun-chat/.husky"
+    "prepare": "cd .. && husky"
   },
   "lint-staged": {
     "*": [
