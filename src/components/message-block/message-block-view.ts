@@ -82,6 +82,11 @@ export class MessageBlockView extends BaseComponent<"div"> {
     if (!this.messageList) {
       return;
     }
+
+    if (this.messageList.textContent === "Write your first message...") {
+      this.messageList.textContent = EMPTY_STRING;
+    }
+
     const justifyClass =
       message.from === this.user?.login
         ? utilitiesStyles.alignSelfStart
