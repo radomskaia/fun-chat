@@ -19,7 +19,6 @@
   overflow-wrap: break-word;
   width: 70%;
   white-space: normal;
-  text-align: left;
 }
 
 @media (max-width: 40em) {
